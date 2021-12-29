@@ -1,4 +1,4 @@
-package uploader
+package routes
 
 import (
 	"bytes"
@@ -64,7 +64,7 @@ func UploadHandler(db *pgx.Conn) gin.HandlerFunc {
 				loid integer,
 				uploaded_at timestamp with time zone default now(),
 				name text,
-				type text,
+				file_type text,
 				size int
 			)
 		`
@@ -107,7 +107,7 @@ func UploadHandler(db *pgx.Conn) gin.HandlerFunc {
 
 		insertQuery := `
 			insert into
-			files(loid, type,name,size)
+			files(loid, file_type, name, size)
 			values($1, $2, $3, $4)
 		`
 

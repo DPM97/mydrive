@@ -6,7 +6,7 @@ import (
 	"os"
 
 	"github.com/DPM97/mydrive/backend/pkg/db"
-	"github.com/DPM97/mydrive/backend/pkg/uploader"
+	"github.com/DPM97/mydrive/backend/pkg/routes"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v4"
 	"github.com/joho/godotenv"
@@ -40,5 +40,7 @@ func main() {
 }
 
 func init_routes(router *gin.Engine, db *pgx.Conn) {
-	router.POST("/upload", uploader.UploadHandler(db))
+	router.POST("/upload", routes.UploadHandler(db))
+	router.GET("/download/:id", routes.DownloadHandler(db))
+	router.GET("/files", routes.FetchDocumentHandler(db))
 }
