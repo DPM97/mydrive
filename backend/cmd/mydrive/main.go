@@ -7,7 +7,9 @@ import (
 
 	"github.com/DPM97/mydrive/backend/pkg/db"
 	"github.com/DPM97/mydrive/backend/pkg/routes"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+
 	"github.com/jackc/pgx/v4"
 	"github.com/joho/godotenv"
 )
@@ -25,7 +27,8 @@ func main() {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
-	router := gin.New()
+	router := gin.Default()
+	router.Use(cors.Default())
 
 	/* check for dev port in env file */
 	port := "8080"
@@ -40,7 +43,8 @@ func main() {
 }
 
 func init_routes(router *gin.Engine, db *pgx.Conn) {
-	router.POST("/upload", routes.UploadHandler(db))
 	router.GET("/download/:id", routes.DownloadHandler(db))
-	router.GET("/files", routes.FetchDocumentHandler(db))
+	router.POST("/files/*relPath", routes.UploadHandler(db))
+	router.GET("/files/*relPath", routes.FetchDocumentHandler(db))
+	router.POST("/folders/*relPath", routes.CreateFolderHandler(db))
 }

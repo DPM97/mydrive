@@ -1,32 +1,27 @@
-import { useState } from 'react'
-import axios from 'axios'
+import { FiHardDrive } from 'react-icons/fi'
+import Router from 'next/router'
 
-const Home = () => {
 
-  const [selectedFile, setSelectedFile] = useState(null)
-
-  const submitHandler = () => {
-    const data = new FormData();
-
-    data.append(
-      "uploadedFile",
-      selectedFile,
-      selectedFile.name
-    );
-
-    axios.post('http://localhost:8080/upload', data, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    })
-  }
-
-  return (
-    <div>
-      <input type="file" id="input" onChange={(e) => setSelectedFile(e.target.files[0])} />
-      <button type="submit" onClick={submitHandler}>upload</button>
-    </div >
-  )
-}
+const Home = () => (
+  <div
+    className="
+    h-screen 
+    w-screen 
+    grid 
+    grid-cols-1 
+    gap-4 
+    place-content-center
+    text-center
+    "
+  >
+    <a className="text-xl select-none font-mono"
+      onClick={() => {
+        Router.push('/files/')
+      }}>
+      <FiHardDrive className="w-screen h-20" />
+      Enter MyDrive
+    </a>
+  </div>
+)
 
 export default Home

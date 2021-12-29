@@ -10,8 +10,8 @@ import (
 
 type File struct {
 	ID          sql.NullInt32  `json:"id"`
-	PID         sql.NullInt32  `json:"pid"`
 	LOID        sql.NullInt32  `json:"loid"`
+	Path        sql.NullString `json:"path"`
 	Uploaded_at sql.NullTime   `json:"uploaded_at"`
 	Name        sql.NullString `json:"name"`
 	File_type   sql.NullString `json:"file_type"`
@@ -23,12 +23,12 @@ func FetchDocumentHandler(db *pgx.Conn) gin.HandlerFunc {
 
 		// for now we just fetch all documents with nil pid (root directory)
 
-		fetchQuery := `
+		var fetchQuery string
+		fetchQuery = `
 			select * from files
-			where pid is null
+			where path = $1
 		`
-
-		rows, err := db.Query(context.Background(), fetchQuery)
+		rows, err := db.Query(context.Background(), fetchQuery, c.Param("relPath"))
 
 		if err != nil {
 			c.String(400, "query failed")
@@ -37,14 +37,14 @@ func FetchDocumentHandler(db *pgx.Conn) gin.HandlerFunc {
 
 		defer rows.Close()
 
-		var items []File
+		items := make([]File, 0)
 
 		for rows.Next() {
 			var item File
 			rows.Scan(
 				&item.ID,
-				&item.PID,
 				&item.LOID,
+				&item.Path,
 				&item.Uploaded_at,
 				&item.Name,
 				&item.File_type,
@@ -55,6 +55,40 @@ func FetchDocumentHandler(db *pgx.Conn) gin.HandlerFunc {
 		}
 
 		c.JSON(200, items)
+		return
+	}
+
+	return gin.HandlerFunc(fn)
+}
+
+type CreateFolderForm struct {
+	RelativePath string `json:"relativePath"`
+	Name         string `json:"name"`
+}
+
+func CreateFolderHandler(db *pgx.Conn) gin.HandlerFunc {
+	fn := func(c *gin.Context) {
+
+		var formData CreateFolderForm
+		c.BindJSON(&formData)
+
+		// for now we just fetch all documents with nil pid (root directory)
+
+		insertQuery := `
+			insert into
+			files(file_type, name, path)
+			values($1, $2)
+		`
+
+		if _, err := db.Exec(context.Background(),
+			insertQuery,
+			"folder",
+			formData.Name,
+			formData.RelativePath); err != nil {
+			c.String(400, "could not create folder.")
+		}
+
+		c.String(200, "folder created.")
 		return
 	}
 
