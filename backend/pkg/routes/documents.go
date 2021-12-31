@@ -22,6 +22,8 @@ type File struct {
 func FetchDocumentHandler(db *pgx.Conn) gin.HandlerFunc {
 	fn := func(c *gin.Context) {
 
+		relPath := c.Query("relativePath")
+
 		// for now we just fetch all documents with nil pid (root directory)
 
 		var fetchQuery string
@@ -29,7 +31,8 @@ func FetchDocumentHandler(db *pgx.Conn) gin.HandlerFunc {
 			select * from files
 			where path = $1
 		`
-		rows, err := db.Query(context.Background(), fetchQuery, c.Param("relPath"))
+
+		rows, err := db.Query(context.Background(), fetchQuery, relPath)
 
 		if err != nil {
 			c.String(400, "query failed")

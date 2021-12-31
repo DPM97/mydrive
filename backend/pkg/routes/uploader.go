@@ -126,7 +126,7 @@ func UploadHandler(db *pgx.Conn) gin.HandlerFunc {
 			ext,
 			file.Filename,
 			file.Size,
-			c.Param("relPath")); err != nil {
+			c.Query("relativePath")); err != nil {
 			fmt.Println(err.Error())
 		}
 

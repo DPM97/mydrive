@@ -44,7 +44,7 @@ func main() {
 
 func init_routes(router *gin.Engine, db *pgx.Conn) {
 	router.GET("/download/:id", routes.DownloadHandler(db))
-	router.POST("/files/*relPath", routes.UploadHandler(db))
-	router.GET("/files/*relPath", routes.FetchDocumentHandler(db))
-	router.POST("/folders/create", routes.CreateFolderHandler(db))
+	router.POST("/files", routes.UploadHandler(db))
+	router.GET("/files", routes.FetchDocumentHandler(db))
+	router.POST("/folders", routes.CreateFolderHandler(db))
 }
