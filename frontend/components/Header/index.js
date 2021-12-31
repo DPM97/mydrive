@@ -8,7 +8,7 @@ const Header = () => (
       <span className="font-semibold text-xl tracking-tight">MyDrive</span>
     </div>
     <div className="block lg:hidden">
-      <SearchBar />
+      { /* <SearchBar /> */}
     </div>
   </nav>
 )

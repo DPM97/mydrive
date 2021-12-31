@@ -1,6 +1,6 @@
 import axios from "axios"
 import { useState } from "react"
-import { FiDownload } from "react-icons/fi"
+import { FiDownload, FiFolder } from "react-icons/fi"
 
 const File = ({ id, loid, path, uploaded_at, name, file_type, size }) => {
   const upload_date = new Date(uploaded_at.Time)
@@ -24,21 +24,31 @@ const File = ({ id, loid, path, uploaded_at, name, file_type, size }) => {
       }}
     >
       <div className="h-full p-3">
-        <p className="text-sm font-bold h-3/4">
-          {name.String}
-        </p>
-        <div>
-          <p className="text-xs">
-            Size: {sizeInMb.toFixed(2)} MB
-          </p>
-          <p className="text-xs">Uploaded:
-            {` 
+        {file_type.String !== "folder" && (
+          <div>
+            <p className="text-sm font-bold h-3/4">
+              {name.String}
+            </p>
+            <div>
+              <p className="text-xs">
+                Size: {sizeInMb.toFixed(2)} MB
+              </p>
+              <p className="text-xs">Uploaded:
+                {` 
         ${upload_date.getDay()}/${upload_date.getMonth()}/${upload_date.getFullYear()}
          ${upload_date.getHours() % 12}:${upload_date.getMinutes() < 10 ? '0' + upload_date.getMinutes() : upload_date.getMinutes()}
          ${upload_date.getHours() >= 12 ? 'PM' : 'AM'}
         `}
-          </p>
-        </div>
+              </p>
+            </div>
+          </div>
+        )}
+        {file_type.String === "folder" && (
+          <div className="grid h-full place-items-center">
+            <FiFolder style={{ fontSize: '70px' }} />
+            <p className="text-sm font-bold">{name.String}</p>
+          </div>
+        )}
       </div>
       <div className="bg-neutral-200 rounded-r-md grid grid-rows-1 text-center pt-3 place-content-center">
         <a

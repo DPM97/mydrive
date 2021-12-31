@@ -19,8 +19,6 @@ func createByteArr(c *gin.Context, file *multipart.FileHeader) (*bytes.Buffer, e
 		return nil, err
 	}
 
-	defer src.Close()
-
 	buf := bytes.NewBuffer(nil)
 
 	if _, err := io.Copy(buf, src); err != nil {
@@ -30,6 +28,8 @@ func createByteArr(c *gin.Context, file *multipart.FileHeader) (*bytes.Buffer, e
 	if buf.Len() != int(file.Size) {
 		return nil, errors.New("Not all file bytes could be read.")
 	}
+
+	src.Close()
 
 	return buf, nil
 }
@@ -73,6 +73,7 @@ func UploadHandler(db *pgx.Conn) gin.HandlerFunc {
 		if _, err := tx.Exec(context.Background(), createQuery); err != nil {
 			fmt.Println(err.Error())
 			c.String(400, "failed to create files table.")
+			tx.Rollback(context.TODO())
 			return
 		}
 
@@ -81,28 +82,33 @@ func UploadHandler(db *pgx.Conn) gin.HandlerFunc {
 		loid, err := lo.Create(context.Background(), 0)
 		if err != nil {
 			c.String(400, "failed to create object.")
+			tx.Rollback(context.TODO())
 			return
 		}
 
 		obj, err := lo.Open(context.Background(), loid, pgx.LargeObjectModeWrite)
 		if err != nil {
 			c.String(400, "failed to open object.")
+			tx.Rollback(context.TODO())
 			return
 		}
 
 		n, err := obj.Write(buffer.Bytes())
 		if err != nil {
 			c.String(400, "failed to write object.")
+			tx.Rollback(context.TODO())
 			return
 		}
 
 		if n != int(file.Size) {
 			c.String(400, "Expected n to be %d, got %d", int(file.Size), n)
+			tx.Rollback(context.TODO())
 			return
 		}
 
 		if err := tx.Commit(context.Background()); err != nil {
 			c.String(400, "failed to write object.")
+			tx.Rollback(context.TODO())
 			return
 		}
 

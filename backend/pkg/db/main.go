@@ -35,8 +35,6 @@ func CreateDbSession() *pgx.Conn {
 }
 
 func connect(dbname string) *pgx.Conn {
-	// urlExample := "postgres://username:password@localhost:5432/database_name"
-
 	connUri := fmt.Sprintf("postgres://%s:%s@%s:%d/%s", user, password, host, port, dbname)
 
 	fmt.Println(connUri)

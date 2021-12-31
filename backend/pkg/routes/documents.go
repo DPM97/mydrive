@@ -3,6 +3,7 @@ package routes
 import (
 	"context"
 	"database/sql"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v4"
@@ -35,8 +36,6 @@ func FetchDocumentHandler(db *pgx.Conn) gin.HandlerFunc {
 			return
 		}
 
-		defer rows.Close()
-
 		items := make([]File, 0)
 
 		for rows.Next() {
@@ -53,6 +52,8 @@ func FetchDocumentHandler(db *pgx.Conn) gin.HandlerFunc {
 
 			items = append(items, item)
 		}
+
+		rows.Close()
 
 		c.JSON(200, items)
 		return
@@ -77,7 +78,7 @@ func CreateFolderHandler(db *pgx.Conn) gin.HandlerFunc {
 		insertQuery := `
 			insert into
 			files(file_type, name, path)
-			values($1, $2)
+			values($1, $2, $3)
 		`
 
 		if _, err := db.Exec(context.Background(),
@@ -85,7 +86,9 @@ func CreateFolderHandler(db *pgx.Conn) gin.HandlerFunc {
 			"folder",
 			formData.Name,
 			formData.RelativePath); err != nil {
+			fmt.Println(err.Error())
 			c.String(400, "could not create folder.")
+			return
 		}
 
 		c.String(200, "folder created.")

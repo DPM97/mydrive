@@ -42,6 +42,7 @@ func DownloadHandler(db *pgx.Conn) gin.HandlerFunc {
 		if err != nil {
 			fmt.Println(err.Error())
 			c.String(400, "failed to start transaction.")
+			tx.Rollback(context.TODO())
 			return
 		}
 
@@ -50,6 +51,7 @@ func DownloadHandler(db *pgx.Conn) gin.HandlerFunc {
 		obj, err := lo.Open(context.Background(), uint32(loid.Int32), pgx.LargeObjectModeWrite)
 		if err != nil {
 			c.String(400, "failed to open object.")
+			tx.Rollback(context.TODO())
 			return
 		}
 
@@ -60,6 +62,7 @@ func DownloadHandler(db *pgx.Conn) gin.HandlerFunc {
 		fmt.Println(n, size.Int32)
 		if err != nil || n != int(size.Int32) {
 			c.String(400, "failed to read object.")
+			tx.Rollback(context.TODO())
 			return
 		}
 
