@@ -1,27 +1,12 @@
-import { FiHardDrive } from 'react-icons/fi'
 import Router from 'next/router'
+import { useEffect } from 'react'
 
+const Home = () => {
+  useEffect(() => {
+    Router.push('/files/')
+  })
 
-const Home = () => (
-  <div
-    className="
-    h-screen 
-    w-screen 
-    grid 
-    grid-cols-1 
-    gap-4 
-    place-content-center
-    text-center
-    "
-  >
-    <a className="text-xl select-none font-mono"
-      onClick={() => {
-        Router.push('/files/')
-      }}>
-      <FiHardDrive className="w-screen h-20" />
-      Enter MyDrive
-    </a>
-  </div>
-)
+  return (<></>)
+}
 
 export default Home

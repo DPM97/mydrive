@@ -1,0 +1,1 @@
+export default (slug) => slug.length === 0 ? '/' : `/${slug.join('/')}/`

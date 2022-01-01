@@ -1,7 +1,12 @@
 import { FiPlus, FiUpload } from "react-icons/fi"
 import axios from 'axios'
+import genRelPath from "../../functions/genRelPath"
+import { useState } from "react"
+import Modal from "../Modal"
 
-const SidePanel = ({ onChange }) => {
+const SidePanel = ({ onChange, slug }) => {
+
+  const [isModalActive, setModalActive] = useState(false)
 
   const handleUpload = async (selectedFile) => {
     if (selectedFile === null) return
@@ -15,7 +20,7 @@ const SidePanel = ({ onChange }) => {
     );
 
     await axios.post(
-      `http://localhost:8080${window.location.pathname}${window.location.pathname.endsWith('/') ? '' : '/'}`,
+      `http://localhost:8080/files?relativePath=${genRelPath(slug)}`,
       data,
       {
         headers: {
@@ -27,12 +32,13 @@ const SidePanel = ({ onChange }) => {
     onChange()
   }
 
-  const handleNewFolder = async () => {
+  const handleNewFolder = async (name) => {
+    console.log(name)
     await axios.post(
-      `http://localhost:8080/folders/create`,
+      `http://localhost:8080/folders`,
       {
-        relativePath: `${window.location.pathname.replace('/files', '')}${window.location.pathname.endsWith('/') ? '' : '/'}`,
-        name: 'testing'
+        relativePath: genRelPath(slug),
+        name
       }
     )
 
@@ -40,31 +46,36 @@ const SidePanel = ({ onChange }) => {
   }
 
   return (
-    <div className="grid grid-cols-1 place-items-center mt-10 gap-2">
-      <div>
-        <input type="file" id="fileUpload" className="hidden"
-          onChange={(e) => handleUpload(e.target.files[0])}
-        />
-        <button
-          className="bg-neutral-300 hover:bg-neutral-400 text-white text-md font-bold py-2 px-4 rounded-sm"
-          onClick={() => document.getElementById("fileUpload").click()}
-        >
-          <div>
-            <FiUpload className="inline-block mr-2 text-xl" />Upload File
-          </div>
-        </button>
+    <>
+      {isModalActive && (
+        <Modal title="Create a Folder" setModalActive={setModalActive} onSubmit={handleNewFolder} />
+      )}
+      <div className="grid grid-cols-1 place-items-center mt-10 gap-2">
+        <div>
+          <input type="file" id="fileUpload" className="hidden"
+            onChange={(e) => handleUpload(e.target.files[0])}
+          />
+          <button
+            className="bg-neutral-300 hover:bg-neutral-400 text-white text-md font-bold py-2 px-4 rounded-sm"
+            onClick={() => document.getElementById("fileUpload").click()}
+          >
+            <div>
+              <FiUpload className="inline-block mr-2 text-xl" />Upload File
+            </div>
+          </button>
+        </div>
+        <div>
+          <button
+            className="bg-neutral-300 hover:bg-neutral-400 text-white text-md font-bold py-2 px-4 rounded-sm"
+            onClick={() => setModalActive(true)}
+          >
+            <div>
+              <FiPlus className="inline-block mr-2 text-xl" />New Folder
+            </div>
+          </button>
+        </div>
       </div>
-      <div>
-        <button
-          className="bg-neutral-300 hover:bg-neutral-400 text-white text-md font-bold py-2 px-4 rounded-sm"
-          onClick={handleNewFolder}
-        >
-          <div>
-            <FiPlus className="inline-block mr-2 text-xl" />New Folder
-          </div>
-        </button>
-      </div>
-    </div>
+    </>
   )
 }
 
