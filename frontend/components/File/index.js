@@ -1,15 +1,14 @@
 import axios from "axios"
 import Router from "next/router"
 import { FiDownload, FiFolder, FiTrash } from "react-icons/fi"
-import genRelPath from "../../functions/genRelPath"
+import parseTime from "../../functions/parseTime"
 import Button from "../Button"
 
 const File = ({ id, loid, path, uploaded_at, name, file_type, size, slug, onChange }) => {
-  const upload_date = new Date(uploaded_at.Time)
   const sizeInMb = size.Int32 / 1000000
 
   const download = async () => {
-    const resp = await axios.get(`http://localhost:8080/download/${id.Int32}`, { responseType: 'blob' })
+    const resp = await axios.get(`http://localhost:8080/download/${id.Int32}`, { responseType: 'blob', withCredentials: true })
     const url = window.URL.createObjectURL(new Blob([resp.data]));
     const link = document.createElement('a');
     link.href = url;
@@ -19,12 +18,12 @@ const File = ({ id, loid, path, uploaded_at, name, file_type, size, slug, onChan
   }
 
   const deleteFile = async () => {
-    await axios.delete(`http://localhost:8080/files/${id.Int32}`)
+    await axios.delete(`http://localhost:8080/files/${id.Int32}`, { withCredentials: true })
     onChange()
   }
 
   const deleteFolder = async () => {
-    await axios.delete(`http://localhost:8080/folders/${id.Int32}`)
+    await axios.delete(`http://localhost:8080/folders/${id.Int32}`, { withCredentials: true })
     onChange()
   }
 
@@ -36,7 +35,7 @@ const File = ({ id, loid, path, uploaded_at, name, file_type, size, slug, onChan
     >
       <div className="h-full p-3">
         {file_type.String !== "folder" && (
-          <div>
+          <div className="h-full">
             <p className="text-sm font-bold h-3/4">
               {name.String}
             </p>
@@ -45,11 +44,7 @@ const File = ({ id, loid, path, uploaded_at, name, file_type, size, slug, onChan
                 Size: {sizeInMb.toFixed(2)} MB
               </p>
               <p className="text-xs">Uploaded:
-                {` 
-        ${upload_date.getDay()}/${upload_date.getMonth()}/${upload_date.getFullYear()}
-         ${upload_date.getHours() % 12}:${upload_date.getMinutes() < 10 ? '0' + upload_date.getMinutes() : upload_date.getMinutes()}
-         ${upload_date.getHours() >= 12 ? 'PM' : 'AM'}
-        `}
+                {parseTime(uploaded_at.Time)}
               </p>
             </div>
           </div>

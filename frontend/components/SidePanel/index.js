@@ -2,7 +2,8 @@ import { FiPlus, FiUpload } from "react-icons/fi"
 import axios from 'axios'
 import genRelPath from "../../functions/genRelPath"
 import { useState } from "react"
-import Modal from "../Modal"
+import { CreateFolderModal } from "../Modal"
+import { AnimatePresence } from "framer-motion"
 
 const SidePanel = ({ onChange, slug }) => {
 
@@ -26,6 +27,7 @@ const SidePanel = ({ onChange, slug }) => {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
+        withCredentials: true
       }
     )
 
@@ -39,7 +41,8 @@ const SidePanel = ({ onChange, slug }) => {
       {
         relativePath: genRelPath(slug),
         name
-      }
+      },
+      { withCredentials: true }
     )
 
     onChange()
@@ -47,9 +50,16 @@ const SidePanel = ({ onChange, slug }) => {
 
   return (
     <>
-      {isModalActive && (
-        <Modal title="Create a Folder" setModalActive={setModalActive} onSubmit={handleNewFolder} />
-      )}
+      <AnimatePresence
+        initial={false}
+        exitBeforeEnter={true}
+        onExitComplete={() => null}
+      >
+        {isModalActive && (
+          <CreateFolderModal onSubmit={handleNewFolder} />
+        )}
+      </AnimatePresence>
+
       <div className="grid grid-cols-1 place-items-center mt-10 gap-2">
         <div>
           <input type="file" id="fileUpload" className="hidden"

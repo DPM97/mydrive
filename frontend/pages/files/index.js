@@ -4,15 +4,42 @@ import axios from 'axios'
 import Header from '../../components/Header'
 import SidePanel from '../../components/SidePanel'
 import genRelPath from '../../functions/genRelPath'
+import Breadcrumbs from '../../components/Breadcrumbs.js'
+import { LoginModal } from '../../components/Modal'
 
 export const Files = ({ slug }) => {
   const [files, setFiles] = useState([])
+  const [authorized, setAuth] = useState(true)
 
   const fetchFiles = async () => {
-    const resp = await axios.get(
-      `http://localhost:8080/files?relativePath=${genRelPath(slug)}`
-    )
-    setFiles(resp.data)
+    let resp
+    try {
+      resp = await axios.get(
+        `http://localhost:8080/files?relativePath=${genRelPath(slug)}`,
+        { withCredentials: true }
+      )
+    } catch (e) {
+      if (e.response.status === 401) {
+        setAuth(false)
+      }
+    }
+    if (resp) setFiles(resp.data)
+  }
+
+  const login = async (otp) => {
+    let resp
+    try {
+      resp = await axios.post('http://localhost:8080/login',
+        { otp },
+        { withCredentials: true }
+      )
+    } catch (e) {
+      console.log(e)
+      // throw error
+    }
+    console.log(resp)
+    if (resp) setAuth(true)
+    fetchFiles()
   }
 
   useEffect(() => {
@@ -21,8 +48,10 @@ export const Files = ({ slug }) => {
 
   return (
     <div>
-      <Header />
-
+      {!authorized && (
+        <LoginModal setModalActive={setAuth} onSubmit={login} />
+      )}
+      <Header setFiles={setFiles} setAuth={setAuth} />
       <div
         className="grid w-full"
         style={{
@@ -32,15 +61,18 @@ export const Files = ({ slug }) => {
         <div className="bg-neutral-100 min-w-max" style={{ minHeight: 'calc(100vh - 85px)' }}>
           <SidePanel onChange={fetchFiles} slug={slug} />
         </div>
-        <div className="grid w-full gap-5 p-10"
-          style={{
-            gridTemplateColumns: 'repeat(auto-fill, 18rem)',
-            gridTemplateRows: 'repeat(auto-fill, 10rem)'
-          }}
-        >
-          {files.map((file, i) => (
-            <File slug={slug} onChange={fetchFiles} {...file} key={i} />
-          ))}
+        <div>
+          <Breadcrumbs slug={slug} />
+          <div className="grid w-full gap-5 p-10"
+            style={{
+              gridTemplateColumns: 'repeat(auto-fill, 18rem)',
+              gridTemplateRows: 'repeat(auto-fill, 10rem)'
+            }}
+          >
+            {files.map((file, i) => (
+              <File slug={slug} onChange={fetchFiles} {...file} key={i} />
+            ))}
+          </div>
         </div>
       </div>
     </div>
