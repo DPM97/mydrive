@@ -82,7 +82,7 @@ export const LoginModal = ({ onSubmit }) => (
             <label for="name" className="block font-bold text-gray-800">One Time Password</label>
             <input type="text" name="name" id="otp"
               className="w-full p-2 border border-gray-300 rounded-l shadow focus:outline-none focus:ring-2 focus:ring-teal-500"
-              placeholder="XXX XXX" />
+              placeholder="XXXXXX" />
           </div>
           <button
             className="block w-full p-3 font-bold text-white bg-teal-500 rounded-l"
