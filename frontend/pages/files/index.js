@@ -12,7 +12,7 @@ export const Files = ({ slug }) => {
   const [authorized, setAuth] = useState(true)
 
   const fetchFiles = async () => {
-    let resp
+    let resp = null
     try {
       resp = await axios.get(
         `http://localhost:8080/files?relativePath=${genRelPath(slug)}`,
@@ -27,7 +27,7 @@ export const Files = ({ slug }) => {
   }
 
   const login = async (otp) => {
-    let resp
+    let resp = null
     try {
       resp = await axios.post('http://localhost:8080/login',
         { otp },
@@ -37,7 +37,6 @@ export const Files = ({ slug }) => {
       console.log(e)
       // throw error
     }
-    console.log(resp)
     if (resp) setAuth(true)
     fetchFiles()
   }

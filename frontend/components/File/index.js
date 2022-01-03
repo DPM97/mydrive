@@ -1,6 +1,7 @@
 import axios from "axios"
 import Router from "next/router"
-import { FiDownload, FiFolder, FiTrash } from "react-icons/fi"
+import { FiDownload, FiEye, FiEyeOff, FiFolder, FiTrash } from "react-icons/fi"
+import canViewFile from "../../functions/canViewFile"
 import parseTime from "../../functions/parseTime"
 import Button from "../Button"
 
@@ -62,10 +63,12 @@ const File = ({ id, loid, path, uploaded_at, name, file_type, size, slug, onChan
         <Button OnClick={download} Icon={FiDownload} />
         {file_type.String === "folder" && (
           <Button OnClick={deleteFolder} Icon={FiTrash} />
-
         )}
         {file_type.String !== "folder" && (
           <Button OnClick={deleteFile} Icon={FiTrash} />
+        )}
+        {canViewFile(file_type.String) && (
+          <Button OnClick={() => window.open(`/view/${id.Int32}`, '_blank')} Icon={FiEye} />
         )}
       </div>
 

@@ -56,7 +56,7 @@ const SidePanel = ({ onChange, slug }) => {
         onExitComplete={() => null}
       >
         {isModalActive && (
-          <CreateFolderModal onSubmit={handleNewFolder} />
+          <CreateFolderModal onSubmit={handleNewFolder} setModalActive={setModalActive} />
         )}
       </AnimatePresence>
 

@@ -1,6 +1,8 @@
 lockfileVersion: 5.3
 
 specifiers:
+  '@react-pdf-viewer/core': ^3.0.0
+  '@react-pdf-viewer/zoom': ^3.0.0
   autoprefixer: ^10.4.0
   axios: ^0.24.0
   eslint: 8.5.0
@@ -9,6 +11,7 @@ specifiers:
   eslint-plugin-prettier: ^4.0.0
   framer-motion: ^5.5.5
   next: 12.0.7
+  pdfjs-dist: 2.11.338
   postcss: ^8.4.5
   react: 17.0.2
   react-dom: 17.0.2
@@ -16,9 +19,12 @@ specifiers:
   tailwindcss: ^3.0.8
 
 dependencies:
+  '@react-pdf-viewer/core': 3.0.0_77a7447d4660604dc5e712d56b5f1adf
+  '@react-pdf-viewer/zoom': 3.0.0_77a7447d4660604dc5e712d56b5f1adf
   axios: 0.24.0
   framer-motion: 5.5.5_react-dom@17.0.2+react@17.0.2
   next: 12.0.7_react-dom@17.0.2+react@17.0.2
+  pdfjs-dist: 2.11.338
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
   react-icons: 4.3.1_react@17.0.2
@@ -331,6 +337,31 @@ packages:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.13.0
     dev: true
+
+  /@react-pdf-viewer/core/3.0.0_77a7447d4660604dc5e712d56b5f1adf:
+    resolution: {integrity: sha512-Rx/FRlHkMb2PoY1oszsAEEWwYxlvSRKNYAS45no3sxG2toFgyEsxkcvyGApjtNlbPEQzo3pHKPIEpPazjXkpgQ==}
+    peerDependencies:
+      pdfjs-dist: ^2.6.347
+      react: ^16.8.0 || ^17.0.0
+      react-dom: ^16.8.0 || ^17.0.0
+    dependencies:
+      pdfjs-dist: 2.11.338
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    dev: false
+
+  /@react-pdf-viewer/zoom/3.0.0_77a7447d4660604dc5e712d56b5f1adf:
+    resolution: {integrity: sha512-b+sf3GbpZDhZ5z1qFOmDyTVtCligRhQeLbQ2su403G6NRISUPTvb5NysIJP9cvI2gzNqJS+I7UVDf6xR2Cwlhg==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0
+      react-dom: ^16.8.0 || ^17.0.0
+    dependencies:
+      '@react-pdf-viewer/core': 3.0.0_77a7447d4660604dc5e712d56b5f1adf
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    transitivePeerDependencies:
+      - pdfjs-dist
+    dev: false
 
   /@rushstack/eslint-patch/1.1.0:
     resolution: {integrity: sha512-JLo+Y592QzIE+q7Dl2pMUtt4q8SKYI5jDrZxrozEQxnGVOyYE+GWK9eLkwTaeN9DDctlaRAQ3TBmzZ1qdLE30A==}
@@ -2482,6 +2513,15 @@ packages:
       ripemd160: 2.0.2
       safe-buffer: 5.2.1
       sha.js: 2.4.11
+    dev: false
+
+  /pdfjs-dist/2.11.338:
+    resolution: {integrity: sha512-Ti5VTB0VvSdtTtc7TG71ghMx0SEuNcEs4ghVuZxW0p6OqLjMc0xekZV1B+MmlxEG2Du2e5jgazucWIG/SXTcdA==}
+    peerDependencies:
+      worker-loader: ^3.0.8
+    peerDependenciesMeta:
+      worker-loader:
+        optional: true
     dev: false
 
   /picocolors/1.0.0:
