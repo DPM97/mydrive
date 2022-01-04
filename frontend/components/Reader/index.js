@@ -11,17 +11,14 @@ import '@react-pdf-viewer/core/lib/styles/index.css'
 import API_URI from "../../functions/uri"
 
 const Reader = ({ isPublic }) => {
-  const router = useRouter()
+  const { query, isReady } = useRouter()
+
+  if (!isReady) return <div></div>
+
   const { id } = router.query
 
   const zoomPluginInstance = zoomPlugin()
   const { ZoomInButton, ZoomOutButton, ZoomPopover } = zoomPluginInstance
-
-  if (id === undefined) {
-    return <></>
-  }
-
-  console.log()
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#1a1a1a' }}>
@@ -50,7 +47,7 @@ const Reader = ({ isPublic }) => {
             theme="dark"
             defaultScale={1}
             withCredentials={!isPublic}
-            fileUrl={`http://192.168.86.27:8080/files/JZOIpvTGaVArbRdTdTUKapMRmzNaHNTCjbaTKxiMfyMdqcluLNzGFfaODwLJYQpGgtwMGmQlyuHexuTZBFwwKhghSjIpjTSyLHNo`}
+            fileUrl={`${API_URI}/files/${id}`}
             plugins={[zoomPluginInstance]}
             renderError={() => <DefaultErrorPage statusCode={404} />}
           />
