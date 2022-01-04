@@ -10,13 +10,13 @@ import (
 
 type File struct {
 	ID          sql.NullInt32  `json:"id"`
+	PID         sql.NullString `json:"pid"`
 	LOID        sql.NullInt32  `json:"loid"`
 	Path        sql.NullString `json:"path"`
 	Uploaded_at sql.NullTime   `json:"uploaded_at"`
 	Name        sql.NullString `json:"name"`
 	File_type   sql.NullString `json:"file_type"`
 	Size        sql.NullInt32  `json:"size"`
-	Pid         sql.NullString `json:"pid"`
 }
 
 func FetchDocumentHandler(db *pgx.Conn) gin.HandlerFunc {
@@ -64,13 +64,13 @@ func FetchDocumentHandler(db *pgx.Conn) gin.HandlerFunc {
 			var item File
 			rows.Scan(
 				&item.ID,
+				&item.PID,
 				&item.LOID,
 				&item.Path,
 				&item.Uploaded_at,
 				&item.Name,
 				&item.File_type,
 				&item.Size,
-				&item.Pid,
 			)
 
 			items = append(items, item)
