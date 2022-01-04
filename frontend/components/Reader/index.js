@@ -15,7 +15,7 @@ const Reader = ({ isPublic }) => {
 
   if (!isReady) return <div></div>
 
-  const { id } = router.query
+  const { id } = query
 
   const zoomPluginInstance = zoomPlugin()
   const { ZoomInButton, ZoomOutButton, ZoomPopover } = zoomPluginInstance
