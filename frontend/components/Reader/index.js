@@ -49,7 +49,10 @@ const Reader = ({ isPublic }) => {
             withCredentials={!isPublic}
             fileUrl={`${API_URI}/files/${id}`}
             plugins={[zoomPluginInstance]}
-            renderError={() => <DefaultErrorPage statusCode={404} />}
+            renderError={(e) => {
+              console.log(e)
+              return <DefaultErrorPage statusCode={404} />
+            }}
           />
         </div>
       </Worker >
