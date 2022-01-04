@@ -17,6 +17,8 @@ const Reader = ({ isPublic }) => {
   const zoomPluginInstance = zoomPlugin()
   const { ZoomInButton, ZoomOutButton, ZoomPopover } = zoomPluginInstance
 
+  console.log(`${API_URI}/files/${id}`)
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#1a1a1a' }}>
       <Worker workerUrl="https://unpkg.com/pdfjs-dist@2.11.338/build/pdf.worker.min.js">
