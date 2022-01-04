@@ -33,7 +33,7 @@ func main() {
 
 	corsConfig := cors.DefaultConfig()
 	corsConfig.AllowCredentials = true
-	corsConfig.AllowOrigins = []string{"http://localhost:3000"}
+	corsConfig.AllowOrigins = []string{"http://localhost:3000", "http://192.168.86.27:3000"}
 
 	router.Use(cors.New(corsConfig))
 	router.Use(sessions.Sessions("user_session", db.Setup_Sessions()))
