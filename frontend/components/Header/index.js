@@ -1,7 +1,7 @@
 import axios from "axios"
 import Router from "next/router"
 import { FiHardDrive, FiLogOut } from "react-icons/fi"
-import { API_URI } from "../../functions/uri"
+import API_URI from "../../functions/uri"
 
 const Header = ({ setFiles, setAuth }) => {
 

@@ -3,7 +3,7 @@ import Router from "next/router"
 import { FiDownload, FiEye, FiFolder, FiTrash, FiUsers } from "react-icons/fi"
 import canViewFile from "../../functions/canViewFile"
 import parseTime from "../../functions/parseTime"
-import { API_URI } from "../../functions/uri"
+import API_URI from "../../functions/uri"
 import Button from "../Button"
 
 const File = ({ id, path, uploaded_at, name, file_type, size, pid, onChange }) => {

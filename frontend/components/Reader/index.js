@@ -8,7 +8,7 @@ import { zoomPlugin } from '@react-pdf-viewer/zoom'
 
 import '@react-pdf-viewer/zoom/lib/styles/index.css'
 import '@react-pdf-viewer/core/lib/styles/index.css'
-import { API_URI } from "../../functions/uri"
+import API_URI from "../../functions/uri"
 
 const Reader = ({ isPublic }) => {
   const router = useRouter()

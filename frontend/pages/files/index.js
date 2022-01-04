@@ -6,7 +6,7 @@ import SidePanel from '../../components/SidePanel'
 import genRelPath from '../../functions/genRelPath'
 import Breadcrumbs from '../../components/Breadcrumbs.js'
 import { LoginModal } from '../../components/Modal'
-import { API_URI } from '../../functions/uri'
+import API_URI from '../../functions/uri'
 
 export const Files = ({ slug }) => {
   const [files, setFiles] = useState([])
@@ -35,7 +35,6 @@ export const Files = ({ slug }) => {
         { withCredentials: true }
       )
     } catch (e) {
-      console.log(e)
       // throw error
     }
     if (resp) setAuth(true)
