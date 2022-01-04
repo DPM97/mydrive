@@ -19,7 +19,7 @@ export const Files = ({ slug }) => {
         { withCredentials: true }
       )
     } catch (e) {
-      if (e.response.status === 401) {
+      if (e && e.response && e.response.status === 401) {
         setAuth(false)
       }
     }
