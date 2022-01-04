@@ -22,8 +22,9 @@ func main() {
 
 	defer dbSession.Close(context.Background())
 
+	godotenv.Load()
+
 	if os.Getenv("PRODUCTION") != "true" {
-		godotenv.Load()
 		gin.SetMode(gin.DebugMode)
 	} else {
 		gin.SetMode(gin.ReleaseMode)
@@ -33,7 +34,13 @@ func main() {
 
 	corsConfig := cors.DefaultConfig()
 	corsConfig.AllowCredentials = true
-	corsConfig.AllowOrigins = []string{"http://localhost:3000", "http://192.168.86.27:3000"}
+	corsConfig.AllowOrigins = []string{
+		"http://localhost:3000",
+		"http://192.168.86.27:3000",
+		"http://192.168.86.27",
+		"http://storage.dollon.dev",
+		"https://storage.dollon.dev",
+	}
 
 	router.Use(cors.New(corsConfig))
 	router.Use(sessions.Sessions("user_session", db.Setup_Sessions()))
