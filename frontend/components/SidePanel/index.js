@@ -4,6 +4,7 @@ import genRelPath from "../../functions/genRelPath"
 import { useState } from "react"
 import { CreateFolderModal } from "../Modal"
 import { AnimatePresence } from "framer-motion"
+import { API_URI } from "../../functions/uri"
 
 const SidePanel = ({ onChange, slug }) => {
 
@@ -21,7 +22,7 @@ const SidePanel = ({ onChange, slug }) => {
     );
 
     await axios.post(
-      `http://localhost:8080/files?relativePath=${genRelPath(slug)}`,
+      `${API_URI}/files?relativePath=${genRelPath(slug)}`,
       data,
       {
         headers: {
@@ -37,7 +38,7 @@ const SidePanel = ({ onChange, slug }) => {
   const handleNewFolder = async (name) => {
     console.log(name)
     await axios.post(
-      `http://localhost:8080/folders`,
+      `${API_URI}/folders`,
       {
         relativePath: genRelPath(slug),
         name

@@ -6,6 +6,7 @@ import SidePanel from '../../components/SidePanel'
 import genRelPath from '../../functions/genRelPath'
 import Breadcrumbs from '../../components/Breadcrumbs.js'
 import { LoginModal } from '../../components/Modal'
+import { API_URI } from '../../functions/uri'
 
 export const Files = ({ slug }) => {
   const [files, setFiles] = useState([])
@@ -15,7 +16,7 @@ export const Files = ({ slug }) => {
     let resp = null
     try {
       resp = await axios.get(
-        `http://localhost:8080/files?relativePath=${genRelPath(slug)}`,
+        `${API_URI}/files?relativePath=${genRelPath(slug)}`,
         { withCredentials: true }
       )
     } catch (e) {
@@ -29,7 +30,7 @@ export const Files = ({ slug }) => {
   const login = async (otp) => {
     let resp = null
     try {
-      resp = await axios.post('http://localhost:8080/login',
+      resp = await axios.post(`${API_URI}/login`,
         { otp },
         { withCredentials: true }
       )

@@ -8,6 +8,7 @@ import { zoomPlugin } from '@react-pdf-viewer/zoom'
 
 import '@react-pdf-viewer/zoom/lib/styles/index.css'
 import '@react-pdf-viewer/core/lib/styles/index.css'
+import { API_URI } from "../../functions/uri"
 
 const Reader = ({ isPublic }) => {
   const router = useRouter()
@@ -43,7 +44,7 @@ const Reader = ({ isPublic }) => {
             theme="dark"
             defaultScale={1}
             withCredentials={!isPublic}
-            fileUrl={`http://localhost:8080/files/${id}`}
+            fileUrl={`${API_URI}/files/${id}`}
             plugins={[zoomPluginInstance]}
             renderError={() => <DefaultErrorPage statusCode={404} />}
           />

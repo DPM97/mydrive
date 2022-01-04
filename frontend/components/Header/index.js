@@ -1,11 +1,12 @@
 import axios from "axios"
 import Router from "next/router"
 import { FiHardDrive, FiLogOut } from "react-icons/fi"
+import { API_URI } from "../../functions/uri"
 
 const Header = ({ setFiles, setAuth }) => {
 
   const onLogout = async () => {
-    await axios.get('http://localhost:8080/logout', { withCredentials: true })
+    await axios.get(`${API_URI}/logout`, { withCredentials: true })
     Router.push('/files')
     setAuth(false)
     setFiles([])
