@@ -11,7 +11,7 @@ specifiers:
   eslint-plugin-prettier: ^4.0.0
   framer-motion: ^5.5.5
   next: 12.0.7
-  pdfjs-dist: 2.11.338
+  pdfjs-dist: 2.12.313
   postcss: ^8.4.5
   react: 17.0.2
   react-dom: 17.0.2
@@ -19,12 +19,12 @@ specifiers:
   tailwindcss: ^3.0.8
 
 dependencies:
-  '@react-pdf-viewer/core': 3.0.0_77a7447d4660604dc5e712d56b5f1adf
-  '@react-pdf-viewer/zoom': 3.0.0_77a7447d4660604dc5e712d56b5f1adf
+  '@react-pdf-viewer/core': 3.0.0_bd306a1a01678c376aa08cce65f4c943
+  '@react-pdf-viewer/zoom': 3.0.0_bd306a1a01678c376aa08cce65f4c943
   axios: 0.24.0
   framer-motion: 5.5.5_react-dom@17.0.2+react@17.0.2
   next: 12.0.7_react-dom@17.0.2+react@17.0.2
-  pdfjs-dist: 2.11.338
+  pdfjs-dist: 2.12.313
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
   react-icons: 4.3.1_react@17.0.2
@@ -338,25 +338,25 @@ packages:
       fastq: 1.13.0
     dev: true
 
-  /@react-pdf-viewer/core/3.0.0_77a7447d4660604dc5e712d56b5f1adf:
+  /@react-pdf-viewer/core/3.0.0_bd306a1a01678c376aa08cce65f4c943:
     resolution: {integrity: sha512-Rx/FRlHkMb2PoY1oszsAEEWwYxlvSRKNYAS45no3sxG2toFgyEsxkcvyGApjtNlbPEQzo3pHKPIEpPazjXkpgQ==}
     peerDependencies:
       pdfjs-dist: ^2.6.347
       react: ^16.8.0 || ^17.0.0
       react-dom: ^16.8.0 || ^17.0.0
     dependencies:
-      pdfjs-dist: 2.11.338
+      pdfjs-dist: 2.12.313
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     dev: false
 
-  /@react-pdf-viewer/zoom/3.0.0_77a7447d4660604dc5e712d56b5f1adf:
+  /@react-pdf-viewer/zoom/3.0.0_bd306a1a01678c376aa08cce65f4c943:
     resolution: {integrity: sha512-b+sf3GbpZDhZ5z1qFOmDyTVtCligRhQeLbQ2su403G6NRISUPTvb5NysIJP9cvI2gzNqJS+I7UVDf6xR2Cwlhg==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0
       react-dom: ^16.8.0 || ^17.0.0
     dependencies:
-      '@react-pdf-viewer/core': 3.0.0_77a7447d4660604dc5e712d56b5f1adf
+      '@react-pdf-viewer/core': 3.0.0_bd306a1a01678c376aa08cce65f4c943
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     transitivePeerDependencies:
@@ -2515,8 +2515,8 @@ packages:
       sha.js: 2.4.11
     dev: false
 
-  /pdfjs-dist/2.11.338:
-    resolution: {integrity: sha512-Ti5VTB0VvSdtTtc7TG71ghMx0SEuNcEs4ghVuZxW0p6OqLjMc0xekZV1B+MmlxEG2Du2e5jgazucWIG/SXTcdA==}
+  /pdfjs-dist/2.12.313:
+    resolution: {integrity: sha512-1x6iXO4Qnv6Eb+YFdN5JdUzt4pAkxSp3aLAYPX93eQCyg/m7QFzXVWJHJVtoW48CI8HCXju4dSkhQZwoheL5mA==}
     peerDependencies:
       worker-loader: ^3.0.8
     peerDependenciesMeta:

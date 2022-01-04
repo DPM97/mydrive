@@ -17,7 +17,11 @@ const Reader = ({ isPublic }) => {
   const zoomPluginInstance = zoomPlugin()
   const { ZoomInButton, ZoomOutButton, ZoomPopover } = zoomPluginInstance
 
-  console.log(`${API_URI}/files/${id}`)
+  if (id === undefined) {
+    return <></>
+  }
+
+  console.log()
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#1a1a1a' }}>
@@ -46,7 +50,7 @@ const Reader = ({ isPublic }) => {
             theme="dark"
             defaultScale={1}
             withCredentials={!isPublic}
-            fileUrl={`${API_URI}/files/${id}`}
+            fileUrl={`http://192.168.86.27:8080/files/JZOIpvTGaVArbRdTdTUKapMRmzNaHNTCjbaTKxiMfyMdqcluLNzGFfaODwLJYQpGgtwMGmQlyuHexuTZBFwwKhghSjIpjTSyLHNo`}
             plugins={[zoomPluginInstance]}
             renderError={() => <DefaultErrorPage statusCode={404} />}
           />
