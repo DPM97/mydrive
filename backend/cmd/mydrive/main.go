@@ -57,6 +57,7 @@ func init_routes(router *gin.Engine, db *pgx.Conn, auth *dgoogauth.OTPConfig) {
 	router.POST("/files", routes.AuthRequired, routes.UploadHandler(db))
 	router.GET("/files", routes.AuthRequired, routes.FetchDocumentHandler(db))
 	router.DELETE("/files/:id", routes.AuthRequired, routes.DeleteDocumentHandler(db))
+	router.GET("/files/:id", routes.CheckIfPublicHandler(db), routes.DownloadHandler(db))
 
 	router.POST("/folders", routes.AuthRequired, routes.CreateFolderHandler(db))
 	router.DELETE("/folders/:id", routes.AuthRequired, routes.DeleteFolderHandler(db))

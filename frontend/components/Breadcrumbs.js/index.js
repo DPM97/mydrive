@@ -13,7 +13,7 @@ const Breadcrumbs = ({ slug }) => {
           </Link>
         </li>
         {slug.map((e, i) => (
-          <li className="inline-flex items-center text-cyan-500 hover:text-cyan-600">
+          <li className="inline-flex items-center text-cyan-500 hover:text-cyan-600" key={i}>
             <FiChevronRight className="mr-2 text-gray-500 hover:text-gray-500" />
             <Link href={`/files/${slug.slice(0, i + 1).join('/')}`}>
               {e}

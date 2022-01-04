@@ -4,11 +4,11 @@ import (
 	"bytes"
 	"context"
 	"errors"
-	"fmt"
 	"io"
 	"mime/multipart"
 	"path/filepath"
 
+	"github.com/DPM97/mydrive/backend/pkg/rand"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v4"
 )
@@ -53,7 +53,6 @@ func UploadHandler(db *pgx.Conn) gin.HandlerFunc {
 		tx, err := db.Begin(context.Background())
 
 		if err != nil {
-			fmt.Println(err.Error())
 			c.String(400, err.Error())
 			return
 		}
@@ -95,8 +94,8 @@ func UploadHandler(db *pgx.Conn) gin.HandlerFunc {
 
 		insertQuery := `
 			insert into
-			files(loid, file_type, name, size, path)
-			values($1, $2, $3, $4, $5)
+			files(loid, file_type, name, size, path, pid)
+			values($1, $2, $3, $4, $5, $6)
 		`
 
 		ext := filepath.Ext(file.Filename)
@@ -107,8 +106,9 @@ func UploadHandler(db *pgx.Conn) gin.HandlerFunc {
 			ext,
 			file.Filename,
 			file.Size,
-			c.Query("relativePath")); err != nil {
-			fmt.Println(err.Error())
+			c.Query("relativePath"),
+			rand.Generate(100)); err != nil {
+
 		}
 
 		c.String(200, "success")

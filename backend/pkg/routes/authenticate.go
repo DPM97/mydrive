@@ -1,7 +1,10 @@
 package routes
 
 import (
+	"context"
+	"database/sql"
 	"net/http"
+	"strconv"
 
 	"github.com/dgryski/dgoogauth"
 	"github.com/gin-contrib/sessions"
@@ -30,6 +33,52 @@ func AuthRequired(c *gin.Context) {
 	return
 }
 
+func CheckIfPublicHandler(db *pgx.Conn) gin.HandlerFunc {
+	fn := func(c *gin.Context) {
+		session := sessions.Default(c)
+		user := session.Get("user")
+
+		if user != nil {
+			return
+		}
+
+		fetchByPIDQuery := `
+			select id from files
+			where pid = $1
+		`
+
+		rows, err := db.Query(context.Background(), fetchByPIDQuery, c.Param("id"))
+
+		if err != nil {
+
+			c.String(404, "File deos not exist.")
+			return
+		}
+
+		rows.Next()
+
+		var id sql.NullInt32
+		rows.Scan(&id)
+
+		rows.Close()
+
+		// override params
+		paramsCopy := make([]gin.Param, 0)
+		for _, param := range c.Params {
+			if param.Key == "id" {
+				param.Value = strconv.Itoa(int(id.Int32))
+			}
+			paramsCopy = append(paramsCopy, param)
+		}
+
+		c.Params = paramsCopy
+
+		return
+	}
+
+	return gin.HandlerFunc(fn)
+}
+
 func LoginHandler(db *pgx.Conn, authenticator *dgoogauth.OTPConfig) gin.HandlerFunc {
 	fn := func(c *gin.Context) {
 		session := sessions.Default(c)
@@ -43,6 +92,11 @@ func LoginHandler(db *pgx.Conn, authenticator *dgoogauth.OTPConfig) gin.HandlerF
 		}
 
 		session.Set("user", username)
+
+		session.Options(sessions.Options{
+			MaxAge: 3600 * 12,
+		})
+
 		if err := session.Save(); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
 			return

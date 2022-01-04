@@ -9,7 +9,7 @@ import (
 func GenConfig() *dgoogauth.OTPConfig {
 	config := &dgoogauth.OTPConfig{
 		Secret:      os.Getenv("OTP_SECRET"),
-		WindowSize:  1,
+		WindowSize:  3,
 		UTC:         true,
 		HotpCounter: 0,
 	}

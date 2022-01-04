@@ -40,7 +40,6 @@ func DownloadHandler(db *pgx.Conn) gin.HandlerFunc {
 		tx, err := db.Begin(context.Background())
 
 		if err != nil {
-			fmt.Println(err.Error())
 			c.String(400, "failed to start transaction.")
 			tx.Rollback(context.TODO())
 			return
@@ -59,7 +58,6 @@ func DownloadHandler(db *pgx.Conn) gin.HandlerFunc {
 
 		n, err := obj.Read(p)
 
-		fmt.Println(n, size.Int32)
 		if err != nil || n != int(size.Int32) {
 			c.String(400, "failed to read object.")
 			tx.Rollback(context.TODO())

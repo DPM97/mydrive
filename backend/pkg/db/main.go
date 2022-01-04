@@ -39,8 +39,6 @@ func CreateDbSession() *pgx.Conn {
 func connect(dbname string) *pgx.Conn {
 	connUri := fmt.Sprintf("postgres://%s:%s@%s:%d/%s", user, password, host, port, dbname)
 
-	fmt.Println(connUri)
-
 	conn, err := pgx.Connect(context.Background(), connUri)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)

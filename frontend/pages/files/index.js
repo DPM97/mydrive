@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import File from '../../components/File'
 import axios from 'axios'
 import Header from '../../components/Header'
@@ -11,7 +11,7 @@ export const Files = ({ slug }) => {
   const [files, setFiles] = useState([])
   const [authorized, setAuth] = useState(true)
 
-  const fetchFiles = async () => {
+  const fetchFiles = useCallback(async () => {
     let resp = null
     try {
       resp = await axios.get(
@@ -24,7 +24,7 @@ export const Files = ({ slug }) => {
       }
     }
     if (resp) setFiles(resp.data)
-  }
+  }, [slug])
 
   const login = async (otp) => {
     let resp = null
@@ -43,7 +43,7 @@ export const Files = ({ slug }) => {
 
   useEffect(() => {
     if (slug !== null) fetchFiles()
-  }, [slug])
+  }, [slug, fetchFiles])
 
   return (
     <div>

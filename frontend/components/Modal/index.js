@@ -42,7 +42,7 @@ export const CreateFolderModal = ({ setModalActive, onSubmit }) => (
         </div>
         <div className="mt-4">
           <div className="mb-5">
-            <label for="name" className="block font-bold text-gray-800">Name</label>
+            <label htmlFor="name" className="block font-bold text-gray-800">Name</label>
             <input type="text" name="name" id="createFolderName"
               className="w-full p-2 border border-gray-300 rounded-l shadow focus:outline-none focus:ring-2 focus:ring-teal-500"
               placeholder="Enter a folder name" />
@@ -79,7 +79,7 @@ export const LoginModal = ({ onSubmit }) => (
         </div>
         <div className="mt-4">
           <div className="mb-5">
-            <label for="name" className="block font-bold text-gray-800">One Time Password</label>
+            <label htmlFor="name" className="block font-bold text-gray-800">One Time Password</label>
             <input type="text" name="name" id="otp"
               className="w-full p-2 border border-gray-300 rounded-l shadow focus:outline-none focus:ring-2 focus:ring-teal-500"
               placeholder="XXXXXX" />
