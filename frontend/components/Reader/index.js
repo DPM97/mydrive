@@ -45,7 +45,7 @@ const Reader = ({ isPublic }) => {
         >
           <Viewer
             theme="dark"
-            defaultScale={1}
+            defaultScale={window.innerWidth > 400 ? 1 : 0.5}
             withCredentials={!isPublic}
             fileUrl={`${API_URI}/files/${id}`}
             plugins={[zoomPluginInstance]}
