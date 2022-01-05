@@ -71,4 +71,6 @@ func init_routes(router *gin.Engine, db *pgx.Conn, auth *dgoogauth.OTPConfig) {
 
 	router.POST("/login", routes.LoginHandler(db, auth))
 	router.GET("/logout", routes.LogoutHandler())
+
+	router.GET("/storage", routes.FetchStorageHandler(db))
 }
