@@ -22,7 +22,7 @@ const StorageBar = () => {
   })
 
 
-  useEffect(async () => {
+  useEffect(() => {
     const fetchData = async () => {
       let resp = null
       try {
@@ -37,7 +37,7 @@ const StorageBar = () => {
       if (resp) setStorageData(resp.data)
     }
 
-    await fetchData()
+    fetchData()
   }, [setStorageData])
 
   const [tt, setTT] = useState({
