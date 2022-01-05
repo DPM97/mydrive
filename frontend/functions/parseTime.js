@@ -1,4 +1,4 @@
-export default (timestamp) => {
+const parseTime = (timestamp) => {
   const upload_date = new Date(timestamp)
 
   const mins = upload_date.getMinutes()
@@ -13,3 +13,5 @@ export default (timestamp) => {
     ${hours >= 12 ? 'PM' : 'AM'}
   `
 }
+
+export default parseTime

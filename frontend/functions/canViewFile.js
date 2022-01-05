@@ -1,1 +1,3 @@
-export default (ext) => (ext === '.pdf')
+const canViewFile = (ext) => (ext === '.pdf')
+
+export default canViewFile

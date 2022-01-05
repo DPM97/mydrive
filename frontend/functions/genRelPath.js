@@ -1,1 +1,3 @@
-export default (slug) => slug.length === 0 ? '/' : `/${slug.join('/')}/`
+const genRelPath = (slug) => slug.length === 0 ? '/' : `/${slug.join('/')}/`
+
+export default genRelPath
