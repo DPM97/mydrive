@@ -38,7 +38,7 @@ func CheckIfPublicHandler(db *pgx.Conn) gin.HandlerFunc {
 		session := sessions.Default(c)
 		user := session.Get("user")
 
-		if user != nil {
+		if user != nil || len(c.Param("id")) < 100 {
 			return
 		}
 

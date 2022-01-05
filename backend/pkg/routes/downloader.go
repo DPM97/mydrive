@@ -47,7 +47,7 @@ func DownloadHandler(db *pgx.Conn) gin.HandlerFunc {
 
 		lo := tx.LargeObjects()
 
-		obj, err := lo.Open(context.Background(), uint32(loid.Int32), pgx.LargeObjectModeWrite)
+		obj, err := lo.Open(context.Background(), uint32(loid.Int32), pgx.LargeObjectModeRead)
 		if err != nil {
 			c.String(400, "failed to open object.")
 			tx.Rollback(context.TODO())
