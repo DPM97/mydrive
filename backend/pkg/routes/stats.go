@@ -1,14 +1,15 @@
 package routes
 
 import (
-	"context"
+	"bytes"
 	"fmt"
 	"math"
 	"net/http"
 	"os"
+	"os/exec"
+	"regexp"
 	"strconv"
 
-	"github.com/docker/docker/client"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v4"
 	"golang.org/x/sys/unix"
@@ -28,10 +29,15 @@ type DiskStats struct {
 	Avail uint64 `json:"avail"`
 }
 
+type DiskDataType struct {
+	Percent float64 `json:"percent"`
+	Value   string  `json:"value"`
+}
+
 type FormattedDiskStats struct {
-	TotalSpace  string `json:"totalSpace"`
-	PercentUsed string `json:"percentUsed"`
-	PercentFree string `json:"percentFree"`
+	Total *DiskDataType `json:"total"`
+	Used  *DiskDataType `json:"used"`
+	Free  *DiskDataType `json:"free"`
 }
 
 func round(num float64) int {
@@ -42,8 +48,6 @@ func toFixed(num float64, precision int) float64 {
 	output := math.Pow(10, float64(precision))
 	return float64(round(num*output)) / output
 }
-
-var cli *client.Client
 
 func fetchDiskUsage(volumeName string) (*DiskStats, error) {
 	wd, err := os.Getwd()
@@ -66,27 +70,47 @@ func fetchDiskUsage(volumeName string) (*DiskStats, error) {
 		Free:  stat.Bfree * uint64(stat.Bsize),
 	}
 
-	if cli == nil {
-		cli, err = client.NewClientWithOpts(client.FromEnv)
-		if err != nil {
-			return nil, err
-		}
+	cmd := exec.Command("docker", "system", "df", "-v")
+
+	var out bytes.Buffer
+	cmd.Stdout = &out
+	err = cmd.Run()
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil, err
 	}
 
-	vol, err := cli.VolumeInspect(context.Background(), volumeName)
+	expAsString := fmt.Sprintf("(?:\r\n|\r|\n)(?:%s)(?:\\s*)(?:[0-9]*)(?:\\s*)([0-9|\\.]*)([A-Z]{2})(?:\r\n|\r|\n)", volumeName)
+	regex, err := regexp.Compile(expAsString)
+
 	if err != nil {
 		return nil, err
 	}
 
-	if vol.UsageData != nil {
-		fmt.Println(vol.UsageData.Size)
-	} else {
-		fmt.Println("no size.")
+	res := regex.FindAllStringSubmatch(out.String(), -1)
+
+	group := res[0]
+
+	size, err := strconv.ParseFloat(group[1], 32)
+
+	if err != nil {
+		return nil, err
 	}
 
-	return stats, nil
-
-	// stats.Used = uint64(vol.UsageData.Size)
+	switch group[2] {
+	case "KB":
+		stats.Used = uint64(uint64(size) * uint64(KB))
+		break
+	case "MB":
+		stats.Used = uint64(uint64(size) * uint64(MB))
+		break
+	case "GB":
+		stats.Used = uint64(uint64(size) * uint64(GB))
+		break
+	default:
+		stats.Used = uint64(size)
+	}
 
 	return stats, nil
 }
@@ -103,9 +127,23 @@ func FetchStorageHandler(db *pgx.Conn) gin.HandlerFunc {
 
 		formatted := &FormattedDiskStats{}
 
-		formatted.TotalSpace = strconv.FormatFloat(toFixed(float64(stats.All)/float64(GB), 2), 'f', 2, 64) + " GB"
-		formatted.PercentUsed = strconv.FormatFloat(toFixed(float64(stats.Used)/float64(stats.All), 2), 'f', 2, 64) + "%"
-		formatted.PercentFree = strconv.FormatFloat(toFixed(float64(stats.Avail)/float64(stats.All), 2), 'f', 2, 64) + "%"
+		usedByMisc := float64(stats.All) - (float64(stats.Avail) + float64(stats.Used))
+
+		updatedAll := float64(stats.All) - usedByMisc
+
+		formatted.Total = &DiskDataType{
+			Value: strconv.FormatFloat(toFixed(updatedAll/float64(GB), 2), 'f', 2, 64) + " GB",
+		}
+
+		formatted.Used = &DiskDataType{
+			Percent: toFixed(float64(stats.Used)/updatedAll*100, 2),
+			Value:   strconv.FormatFloat(toFixed(float64(stats.Used)/float64(GB), 2), 'f', 2, 64) + " GB",
+		}
+
+		formatted.Free = &DiskDataType{
+			Percent: toFixed(float64(stats.Avail)/updatedAll*100, 2),
+			Value:   strconv.FormatFloat(toFixed(float64(stats.Avail)/float64(GB), 2), 'f', 2, 64) + " GB",
+		}
 
 		c.JSON(http.StatusOK, formatted)
 		return

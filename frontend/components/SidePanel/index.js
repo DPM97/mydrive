@@ -5,6 +5,7 @@ import { useState } from "react"
 import { CreateFolderModal } from "../Modal"
 import { AnimatePresence } from "framer-motion"
 import API_URI from "../../functions/uri"
+import StorageBar from "../StorageBar"
 
 const SidePanel = ({ onChange, slug }) => {
 
@@ -60,7 +61,8 @@ const SidePanel = ({ onChange, slug }) => {
         )}
       </AnimatePresence>
 
-      <div className="grid grid-cols-1 place-items-center mt-10 gap-2">
+      <div className="grid grid-cols-1 place-items-center mt-5 gap-2">
+        <StorageBar />
         <div>
           <input type="file" id="fileUpload" className="hidden"
             onChange={(e) => handleUpload(e.target.files[0])}

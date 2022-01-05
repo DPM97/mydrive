@@ -16,7 +16,8 @@
     "pdfjs-dist": "2.11.338",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "react-icons": "^4.3.1"
+    "react-icons": "^4.3.1",
+    "react-tooltip": "^4.2.21"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.0",
