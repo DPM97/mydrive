@@ -1,8 +1,8 @@
 lockfileVersion: 5.3
 
 specifiers:
-  '@react-pdf-viewer/core': 3.0.0
-  '@react-pdf-viewer/zoom': ^3.0.0
+  '@react-pdf-viewer/core': 2.5.0
+  '@react-pdf-viewer/zoom': 2.5.0
   autoprefixer: ^10.4.0
   axios: ^0.24.0
   eslint: 8.5.0
@@ -16,12 +16,13 @@ specifiers:
   react: 17.0.2
   react-dom: 17.0.2
   react-icons: ^4.3.1
+  react-toastify: ^8.1.0
   react-tooltip: ^4.2.21
   tailwindcss: ^3.0.8
 
 dependencies:
-  '@react-pdf-viewer/core': 3.0.0_77a7447d4660604dc5e712d56b5f1adf
-  '@react-pdf-viewer/zoom': 3.0.0_77a7447d4660604dc5e712d56b5f1adf
+  '@react-pdf-viewer/core': 2.5.0_77a7447d4660604dc5e712d56b5f1adf
+  '@react-pdf-viewer/zoom': 2.5.0_77a7447d4660604dc5e712d56b5f1adf
   axios: 0.24.0
   framer-motion: 5.5.5_react-dom@17.0.2+react@17.0.2
   next: 12.0.7_react-dom@17.0.2+react@17.0.2
@@ -29,6 +30,7 @@ dependencies:
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
   react-icons: 4.3.1_react@17.0.2
+  react-toastify: 8.1.0_react-dom@17.0.2+react@17.0.2
   react-tooltip: 4.2.21_react-dom@17.0.2+react@17.0.2
 
 devDependencies:
@@ -340,8 +342,8 @@ packages:
       fastq: 1.13.0
     dev: true
 
-  /@react-pdf-viewer/core/3.0.0_77a7447d4660604dc5e712d56b5f1adf:
-    resolution: {integrity: sha512-Rx/FRlHkMb2PoY1oszsAEEWwYxlvSRKNYAS45no3sxG2toFgyEsxkcvyGApjtNlbPEQzo3pHKPIEpPazjXkpgQ==}
+  /@react-pdf-viewer/core/2.5.0_77a7447d4660604dc5e712d56b5f1adf:
+    resolution: {integrity: sha512-No4ibooHFMlAgVxBrbDiXmcKf9u1ZImVlsEVsFDtNC9gBt8mt7Fw2pC9mj/uurlLKnjyKtJGCZpPOp3GpPqiEQ==}
     peerDependencies:
       pdfjs-dist: ^2.6.347
       react: ^16.8.0 || ^17.0.0
@@ -352,13 +354,13 @@ packages:
       react-dom: 17.0.2_react@17.0.2
     dev: false
 
-  /@react-pdf-viewer/zoom/3.0.0_77a7447d4660604dc5e712d56b5f1adf:
-    resolution: {integrity: sha512-b+sf3GbpZDhZ5z1qFOmDyTVtCligRhQeLbQ2su403G6NRISUPTvb5NysIJP9cvI2gzNqJS+I7UVDf6xR2Cwlhg==}
+  /@react-pdf-viewer/zoom/2.5.0_77a7447d4660604dc5e712d56b5f1adf:
+    resolution: {integrity: sha512-nUSpcsBsl/qI6RjheJDnfi4udVrRZq6tkmmKZLLHgS5wm92ZVc2N1q4BPwjeujIMtOfFzPjm4r9FTmbmr2BzxA==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0
       react-dom: ^16.8.0 || ^17.0.0
     dependencies:
-      '@react-pdf-viewer/core': 3.0.0_77a7447d4660604dc5e712d56b5f1adf
+      '@react-pdf-viewer/core': 2.5.0_77a7447d4660604dc5e712d56b5f1adf
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
     transitivePeerDependencies:
@@ -853,6 +855,11 @@ packages:
 
   /classnames/2.2.6:
     resolution: {integrity: sha512-JR/iSQOSt+LQIWwrwEzJ9uk0xfN3mTVYMwt1Ir5mUcSN6pU+V4zQFFaJsclJbPuAUQH+yfWef6tm7l1quW3C8Q==}
+    dev: false
+
+  /clsx/1.1.1:
+    resolution: {integrity: sha512-6/bPho624p3S2pMyvP5kKBPXnI3ufHLObBFCfgx+LkeR5lg2XYy2hqZqUf45ypD8COn2bhgGJSUE+l5dhNBieA==}
+    engines: {node: '>=6'}
     dev: false
 
   /color-convert/1.9.3:
@@ -2743,6 +2750,17 @@ packages:
   /react-refresh/0.8.3:
     resolution: {integrity: sha512-X8jZHc7nCMjaCqoU+V2I0cOhNW+QMBwSUkeXnTi8IPe6zaRWfn60ZzvFDZqWPfmSJfjub7dDW1SP0jaHWLu/hg==}
     engines: {node: '>=0.10.0'}
+    dev: false
+
+  /react-toastify/8.1.0_react-dom@17.0.2+react@17.0.2:
+    resolution: {integrity: sha512-M+Q3rTmEw/53Csr7NsV/YnldJe4c7uERcY7Tma9mvLU98QT2VhIkKwjBzzxZkJRk/oBKyUAtkyMjMgO00hx6gQ==}
+    peerDependencies:
+      react: '>=16'
+      react-dom: '>=16'
+    dependencies:
+      clsx: 1.1.1
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
     dev: false
 
   /react-tooltip/4.2.21_react-dom@17.0.2+react@17.0.2:

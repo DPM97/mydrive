@@ -1,12 +1,17 @@
 import axios from "axios"
 import Router from "next/router"
 import { FiHardDrive, FiLogOut } from "react-icons/fi"
+import { toast } from "react-toastify"
 import API_URI from "../../functions/uri"
 
 const Header = ({ setFiles, setAuth }) => {
 
   const onLogout = async () => {
-    await axios.get(`${API_URI}/logout`, { withCredentials: true })
+    try {
+      await axios.get(`${API_URI}/logout`, { withCredentials: true })
+    } catch (e) {
+      toast.error(e.response.data)
+    }
     Router.push('/files')
     setAuth(false)
     setFiles([])

@@ -1,5 +1,6 @@
 import axios from "axios"
 import { useState, useEffect } from "react"
+import { toast } from "react-toastify";
 import ReactTooltip from 'react-tooltip';
 
 import API_URI from "../../functions/uri"
@@ -31,8 +32,7 @@ const StorageBar = () => {
           { withCredentials: true }
         )
       } catch (e) {
-        console.log(e)
-        // throw err usually
+        toast.error(e.response.error)
       }
       if (resp) setStorageData(resp.data)
     }

@@ -1,6 +1,7 @@
 import axios from "axios"
 import Router from "next/router"
 import { FiDownload, FiEye, FiFolder, FiTrash, FiUsers } from "react-icons/fi"
+import { toast } from "react-toastify"
 import canViewFile from "../../functions/canViewFile"
 import parseTime from "../../functions/parseTime"
 import API_URI from "../../functions/uri"
@@ -10,7 +11,12 @@ const File = ({ id, path, uploaded_at, name, file_type, size, pid, onChange }) =
   const sizeInMb = size.Int32 / 1000000
 
   const download = async () => {
-    const resp = await axios.get(`${API_URI}/download/${id.Int32}`, { responseType: 'blob', withCredentials: true })
+    let resp
+    try {
+      resp = await axios.get(`${API_URI}/download/${id.Int32}`, { responseType: 'blob', withCredentials: true })
+    } catch (e) {
+      toast.error(e.response.data)
+    }
     const url = window.URL.createObjectURL(new Blob([resp.data]));
     const link = document.createElement('a');
     link.href = url;
@@ -20,12 +26,20 @@ const File = ({ id, path, uploaded_at, name, file_type, size, pid, onChange }) =
   }
 
   const deleteFile = async () => {
-    await axios.delete(`${API_URI}/files/${id.Int32}`, { withCredentials: true })
+    try {
+      await axios.delete(`${API_URI}/files/${id.Int32}`, { withCredentials: true })
+    } catch (e) {
+      toast.error(e.response.data)
+    }
     onChange()
   }
 
   const deleteFolder = async () => {
-    await axios.delete(`${API_URI}/folders/${id.Int32}`, { withCredentials: true })
+    try {
+      await axios.delete(`${API_URI}/folders/${id.Int32}`, { withCredentials: true })
+    } catch (e) {
+      toast.error(e.response.data)
+    }
     onChange()
   }
 

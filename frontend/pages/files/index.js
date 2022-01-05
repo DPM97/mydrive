@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
-import File from '../../components/File'
 import axios from 'axios'
+import { ToastContainer, toast } from 'react-toastify';
+import File from '../../components/File'
 import Header from '../../components/Header'
 import SidePanel from '../../components/SidePanel'
 import genRelPath from '../../functions/genRelPath'
@@ -8,7 +9,9 @@ import Breadcrumbs from '../../components/Breadcrumbs.js'
 import { LoginModal } from '../../components/Modal'
 import API_URI from '../../functions/uri'
 
-export const Files = ({ slug }) => {
+import 'react-toastify/dist/ReactToastify.css';
+
+const Files = ({ slug }) => {
   const [files, setFiles] = useState([])
   const [authorized, setAuth] = useState(true)
 
@@ -22,6 +25,8 @@ export const Files = ({ slug }) => {
     } catch (e) {
       if (e && e.response && e.response.status === 401) {
         setAuth(false)
+      } else {
+        toast.error(e.response.data)
       }
     }
     if (resp) setFiles(resp.data)
@@ -35,7 +40,7 @@ export const Files = ({ slug }) => {
         { withCredentials: true }
       )
     } catch (e) {
-      // throw error
+      toast.error(e.response.data)
     }
     if (resp) setAuth(true)
     fetchFiles()
@@ -47,6 +52,12 @@ export const Files = ({ slug }) => {
 
   return (
     <div>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        closeOnClick
+        pauseOnHover
+      />
       {!authorized && (
         <LoginModal setModalActive={setAuth} onSubmit={login} />
       )}
@@ -78,7 +89,7 @@ export const Files = ({ slug }) => {
   )
 };
 
+
 export const Home = () => <Files slug={[]} />
 
-
-export default Home
+export { Home as default, Files }

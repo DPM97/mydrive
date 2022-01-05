@@ -21,8 +21,8 @@ const Reader = ({ isPublic }) => {
   const { ZoomInButton, ZoomOutButton, ZoomPopover } = zoomPluginInstance
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#1a1a1a' }}>
-      <Worker workerUrl="https://unpkg.com/pdfjs-dist@2.12.313/build/pdf.worker.min.js">
+    <div className="min-h-screen" style={{ backgroundColor: '#ffffff' }}>
+      <Worker workerUrl="https://unpkg.com/pdfjs-dist@2.11.338/build/pdf.worker.min.js">
         <div
           style={{
             alignItems: 'center',
@@ -44,7 +44,6 @@ const Reader = ({ isPublic }) => {
           }}
         >
           <Viewer
-            theme="dark"
             defaultScale={window.innerWidth > 400 ? 1 : 0.5}
             withCredentials={!isPublic}
             fileUrl={`${API_URI}/files/${id}`}

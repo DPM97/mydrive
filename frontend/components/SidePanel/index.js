@@ -6,6 +6,7 @@ import { CreateFolderModal } from "../Modal"
 import { AnimatePresence } from "framer-motion"
 import API_URI from "../../functions/uri"
 import StorageBar from "../StorageBar"
+import { toast } from "react-toastify"
 
 const SidePanel = ({ onChange, slug }) => {
 
@@ -22,29 +23,37 @@ const SidePanel = ({ onChange, slug }) => {
       selectedFile.name
     );
 
-    await axios.post(
-      `${API_URI}/files?relativePath=${genRelPath(slug)}`,
-      data,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-        withCredentials: true
-      }
-    )
+    try {
+      await axios.post(
+        `${API_URI}/files?relativePath=${genRelPath(slug)}`,
+        data,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          withCredentials: true
+        }
+      )
+    } catch (e) {
+      toast.error(e.response.data)
+    }
 
     onChange()
   }
 
   const handleNewFolder = async (name) => {
-    await axios.post(
-      `${API_URI}/folders`,
-      {
-        relativePath: genRelPath(slug),
-        name
-      },
-      { withCredentials: true }
-    )
+    try {
+      await axios.post(
+        `${API_URI}/folders`,
+        {
+          relativePath: genRelPath(slug),
+          name
+        },
+        { withCredentials: true }
+      )
+    } catch (e) {
+      toast.error(e.response.data)
+    }
 
     onChange()
   }
