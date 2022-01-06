@@ -1,3 +1,7 @@
+# Screenshots
+![image](https://user-images.githubusercontent.com/34420038/148321014-98fb4a36-9764-42ef-ac0c-1443eff2327f.png)
+![image](https://user-images.githubusercontent.com/34420038/148320916-894d68d2-09ee-4bce-93ca-514b82f04743.png)
+
 # Usage
 The main purpose of this is project was to become a little more familiar
 with go and postgresql. In essence, it is a simple file storage application, similar to that of something like *AWS S3* or *Google Drive*. Currently, it only supports a single user, however, with a bit of tinkering could be set up for as many as you need (w/ the addition of an additional auth form on top of the OTP).
