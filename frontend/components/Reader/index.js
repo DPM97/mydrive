@@ -1,7 +1,7 @@
 import { useRouter } from "next/router"
 import DefaultErrorPage from 'next/error'
 
-import { Viewer } from '@react-pdf-viewer/core'
+import { SpecialZoomLevel, Viewer } from '@react-pdf-viewer/core'
 import { Worker } from '@react-pdf-viewer/core'
 
 import { zoomPlugin } from '@react-pdf-viewer/zoom'
@@ -44,7 +44,7 @@ const Reader = ({ isPublic }) => {
           }}
         >
           <Viewer
-            defaultScale={window.innerWidth > 400 ? 1 : 0.5}
+            defaultScale={SpecialZoomLevel.PageFit}
             withCredentials={!isPublic}
             fileUrl={`${API_URI}/files/${id}`}
             plugins={[zoomPluginInstance]}
