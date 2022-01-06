@@ -21,7 +21,7 @@ const Reader = ({ isPublic }) => {
   const { ZoomInButton, ZoomOutButton, ZoomPopover } = zoomPluginInstance
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#ffffff' }}>
+    <div className="min-h-screen min-w-screen" style={{ backgroundColor: '#ffffff' }}>
       <Worker workerUrl="https://unpkg.com/pdfjs-dist@2.11.338/build/pdf.worker.min.js">
         <div
           style={{
@@ -39,8 +39,7 @@ const Reader = ({ isPublic }) => {
         </div>
         <div
           style={{
-            flex: 1,
-            overflow: 'hidden',
+            height: 'calc(100vh - 49px)',
           }}
         >
           <Viewer
