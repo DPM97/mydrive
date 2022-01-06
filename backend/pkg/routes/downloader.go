@@ -4,23 +4,34 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"strconv"
 
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v4"
 )
 
 func DownloadHandler(db *pgx.Conn) gin.HandlerFunc {
 	fn := func(c *gin.Context) {
+		session := sessions.Default(c)
+		user := session.Get("user")
 
 		// check if the file we are looking for exists
 		findQuery := `
 		select loid, size, name from files
-		where id = $1
+		where pid = $1 or (owner = $2 and id = $3)
 		`
 
 		documentID := c.Param("id")
 
-		rows, err := db.Query(context.Background(), findQuery, documentID)
+		intID, err := strconv.Atoi(documentID)
+
+		if err != nil {
+			c.String(200, "could not convert id to integer.")
+			return
+		}
+
+		rows, err := db.Query(context.Background(), findQuery, documentID, user, intID)
 
 		if err != nil {
 			c.String(200, "no document with this id exists")
@@ -33,6 +44,10 @@ func DownloadHandler(db *pgx.Conn) gin.HandlerFunc {
 		var size sql.NullInt32
 		var f_name sql.NullString
 		rows.Scan(&loid, &size, &f_name)
+
+		fmt.Println(loid)
+		fmt.Println(size)
+		fmt.Println(f_name)
 
 		rows.Close()
 

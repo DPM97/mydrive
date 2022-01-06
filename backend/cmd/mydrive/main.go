@@ -5,10 +5,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/DPM97/mydrive/backend/pkg/auth"
 	"github.com/DPM97/mydrive/backend/pkg/db"
 	"github.com/DPM97/mydrive/backend/pkg/routes"
-	"github.com/dgryski/dgoogauth"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -43,7 +41,6 @@ func main() {
 
 	router.Use(cors.New(corsConfig))
 	router.Use(sessions.Sessions("user_session", db.Setup_Sessions()))
-	auth := auth.GenConfig()
 
 	/* check for dev port in env file */
 	port := "8080"
@@ -52,12 +49,12 @@ func main() {
 		port = newPort
 	}
 
-	init_routes(router, dbSession, auth)
+	init_routes(router, dbSession)
 
 	log.Fatal(router.Run(":" + port))
 }
 
-func init_routes(router *gin.Engine, db *pgx.Conn, auth *dgoogauth.OTPConfig) {
+func init_routes(router *gin.Engine, db *pgx.Conn) {
 	router.GET("/download/:id", routes.AuthRequired, routes.DownloadHandler(db))
 
 	router.POST("/files", routes.AuthRequired, routes.UploadHandler(db))
@@ -68,7 +65,10 @@ func init_routes(router *gin.Engine, db *pgx.Conn, auth *dgoogauth.OTPConfig) {
 	router.POST("/folders", routes.AuthRequired, routes.CreateFolderHandler(db))
 	router.DELETE("/folders/:id", routes.AuthRequired, routes.DeleteFolderHandler(db))
 
-	router.POST("/login", routes.LoginHandler(db, auth))
+	router.GET("/qr", routes.FetchQRHandler(db))
+	router.POST("/accounts", routes.CreateAcctHandler(db))
+
+	router.POST("/login", routes.LoginHandler(db))
 	router.GET("/logout", routes.LogoutHandler())
 
 	router.GET("/storage", routes.AuthRequired, routes.FetchStorageHandler(db))

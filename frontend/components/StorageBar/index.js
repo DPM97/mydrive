@@ -22,6 +22,8 @@ const StorageBar = () => {
     },
   })
 
+  let pulseClass = "w-full grid place-items-end"
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,7 +39,8 @@ const StorageBar = () => {
       if (resp) setStorageData(resp.data)
     }
 
-    fetchData()
+    if (document.cookie.match(/^(.*;)?\s*user_session\s*=\s*[^;]+(.*)?$/)) pulseClass += "animate-pulse"
+    if (storageData.total.value === '0.00 GB') fetchData()
   }, [setStorageData])
 
   const [tt, setTT] = useState({
@@ -45,22 +48,10 @@ const StorageBar = () => {
     text: ''
   })
 
-  /*
-
-        {storageData.total.value === "0.00 GB" && (
-        <div class="animate-pulse flex space-x-4">
-          <div class="h-2 bg-gray-700 rounded"></div>
-        </div>
-      )}
-      <p className="text-right w-full">{storageData.total.value}</p>
-
-      */
-
-
   return (
     <div style={{ width: '75%' }} className="text-xs">
       {storageData.total.value === "0.00 GB" && (
-        <div className="animate-pulse w-full grid place-items-end">
+        <div className={pulseClass}>
           <div className="h-4 bg-gray-200 w-1/2"></div>
         </div>
       )}

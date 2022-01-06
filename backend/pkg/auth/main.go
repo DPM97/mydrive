@@ -1,14 +1,13 @@
 package auth
 
 import (
-	"os"
-
 	"github.com/dgryski/dgoogauth"
 )
 
-func GenConfig() *dgoogauth.OTPConfig {
+func GenConfig(OTPSecret string) *dgoogauth.OTPConfig {
+
 	config := &dgoogauth.OTPConfig{
-		Secret:      os.Getenv("OTP_SECRET"),
+		Secret:      OTPSecret,
 		WindowSize:  3,
 		UTC:         true,
 		HotpCounter: 0,

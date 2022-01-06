@@ -16,6 +16,7 @@ specifiers:
   react: 17.0.2
   react-dom: 17.0.2
   react-icons: ^4.3.1
+  react-qr-code: ^2.0.3
   react-toastify: ^8.1.0
   react-tooltip: ^4.2.21
   tailwindcss: ^3.0.8
@@ -30,6 +31,7 @@ dependencies:
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
   react-icons: 4.3.1_react@17.0.2
+  react-qr-code: 2.0.3_react@17.0.2
   react-toastify: 8.1.0_react-dom@17.0.2+react@17.0.2
   react-tooltip: 4.2.21_react-dom@17.0.2+react@17.0.2
 
@@ -2674,6 +2676,10 @@ packages:
     resolution: {integrity: sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==}
     engines: {node: '>=6'}
 
+  /qr.js/0.0.0:
+    resolution: {integrity: sha1-ys6GOG9ZoNuAUPqQ2baw6IoeNk8=}
+    dev: false
+
   /querystring-es3/0.2.1:
     resolution: {integrity: sha1-nsYfeQSYdXB9aUFFlv2Qek1xHnM=}
     engines: {node: '>=0.4.x'}
@@ -2745,6 +2751,17 @@ packages:
 
   /react-merge-refs/1.1.0:
     resolution: {integrity: sha512-alTKsjEL0dKH/ru1Iyn7vliS2QRcBp9zZPGoWxUOvRGWPUYgjo+V01is7p04It6KhgrzhJGnIj9GgX8W4bZoCQ==}
+    dev: false
+
+  /react-qr-code/2.0.3_react@17.0.2:
+    resolution: {integrity: sha512-6GDH0l53lksf2JgZwwcoS0D60a1OAal/GQRyNFkMBW19HjSqvtD5S20scmSQsKl+BgWM85Wd5DCcUYoHd+PZnQ==}
+    peerDependencies:
+      react: ^16.x || ^17.x
+      react-native-svg: '*'
+    dependencies:
+      prop-types: 15.8.0
+      qr.js: 0.0.0
+      react: 17.0.2
     dev: false
 
   /react-refresh/0.8.3:

@@ -6,7 +6,7 @@ import Header from '../../components/Header'
 import SidePanel from '../../components/SidePanel'
 import genRelPath from '../../functions/genRelPath'
 import Breadcrumbs from '../../components/Breadcrumbs.js'
-import { LoginModal } from '../../components/Modal'
+import { CreateAcctModal, LoginModal } from '../../components/Modal'
 import API_URI from '../../functions/uri'
 
 import 'react-toastify/dist/ReactToastify.css';
@@ -14,6 +14,7 @@ import 'react-toastify/dist/ReactToastify.css';
 const Files = ({ slug }) => {
   const [files, setFiles] = useState([])
   const [authorized, setAuth] = useState(true)
+  const [showCreate, setShowCreate] = useState(false)
 
   const fetchFiles = useCallback(async () => {
     let resp = null
@@ -32,11 +33,11 @@ const Files = ({ slug }) => {
     if (resp) setFiles(resp.data)
   }, [slug])
 
-  const login = async (otp) => {
+  const login = async (otp, email) => {
     let resp = null
     try {
       resp = await axios.post(`${API_URI}/login`,
-        { otp },
+        { otp, email },
         { withCredentials: true }
       )
     } catch (e) {
@@ -44,6 +45,20 @@ const Files = ({ slug }) => {
     }
     if (resp) setAuth(true)
     fetchFiles()
+  }
+
+  const createAcct = async (email, OTPSecret) => {
+    try {
+      await axios.post(`${API_URI}/accounts`,
+        { OTPSecret, email },
+        { withCredentials: true }
+      )
+    } catch (e) {
+      toast.error(e.response.data)
+      return
+    }
+    toast.success('Account created successfully! Please log in.')
+    setShowCreate(false)
   }
 
   useEffect(() => {
@@ -58,8 +73,15 @@ const Files = ({ slug }) => {
         closeOnClick
         pauseOnHover
       />
-      {!authorized && (
-        <LoginModal setModalActive={setAuth} onSubmit={login} />
+      {!showCreate && !authorized && (
+        <LoginModal setModalActive={setAuth} onSubmit={login} onCreateAcct={() => {
+          setShowCreate(true)
+        }} />
+      )}
+      {showCreate && !authorized && (
+        <CreateAcctModal onSubmit={createAcct} onLogin={() => {
+          setShowCreate(false)
+        }} />
       )}
       <Header setFiles={setFiles} setAuth={setAuth} />
       <div

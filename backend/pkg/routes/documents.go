@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v4"
 )
@@ -17,10 +18,13 @@ type File struct {
 	Name        sql.NullString `json:"name"`
 	File_type   sql.NullString `json:"file_type"`
 	Size        sql.NullInt32  `json:"size"`
+	Owner       sql.NullInt32  `json:"owner"`
 }
 
 func FetchDocumentHandler(db *pgx.Conn) gin.HandlerFunc {
 	fn := func(c *gin.Context) {
+		session := sessions.Default(c)
+		user := session.Get("user")
 
 		relPath := c.Query("relativePath")
 
@@ -35,12 +39,12 @@ func FetchDocumentHandler(db *pgx.Conn) gin.HandlerFunc {
 				uploaded_at timestamp with time zone default now(),
 				name text,
 				file_type text,
-				size int
+				size int,
+				owner int
 			)
 		`
 
 		if _, err := db.Exec(context.Background(), createQuery); err != nil {
-
 			c.String(400, "failed to create files table.")
 			return
 		}
@@ -48,10 +52,13 @@ func FetchDocumentHandler(db *pgx.Conn) gin.HandlerFunc {
 		var fetchQuery string
 		fetchQuery = `
 			select * from files
-			where path = $1
+			where 
+			(path = $1)
+			and
+			(owner = $2)
 		`
 
-		rows, err := db.Query(context.Background(), fetchQuery, relPath)
+		rows, err := db.Query(context.Background(), fetchQuery, relPath, user)
 
 		if err != nil {
 			c.String(400, "query failed")
@@ -71,6 +78,7 @@ func FetchDocumentHandler(db *pgx.Conn) gin.HandlerFunc {
 				&item.Name,
 				&item.File_type,
 				&item.Size,
+				&item.Owner,
 			)
 
 			items = append(items, item)
@@ -87,13 +95,18 @@ func FetchDocumentHandler(db *pgx.Conn) gin.HandlerFunc {
 
 func DeleteDocumentHandler(db *pgx.Conn) gin.HandlerFunc {
 	fn := func(c *gin.Context) {
+		session := sessions.Default(c)
+		user := session.Get("user")
 
 		findLoQuery := `
 			select loid from files
-			where id = $1
+			where 
+			(id = $1)
+			and
+			(owner = $2)
 		`
 
-		rows, err := db.Query(context.Background(), findLoQuery, c.Param("id"))
+		rows, err := db.Query(context.Background(), findLoQuery, c.Param("id"), user)
 
 		if err != nil {
 			c.String(400, "no document with this id exists.")
@@ -133,12 +146,16 @@ func DeleteDocumentHandler(db *pgx.Conn) gin.HandlerFunc {
 
 		deleteQuery := `
 			delete from files
-			where id = $1
+			where 
+			(id = $1)
+			and
+			(owner = $2)
 		`
 
 		if _, err := db.Exec(context.Background(),
 			deleteQuery,
 			c.Param("id"),
+			user,
 		); err != nil {
 			c.String(400, "could not delete file.")
 			return
@@ -158,6 +175,8 @@ type CreateFolderForm struct {
 
 func CreateFolderHandler(db *pgx.Conn) gin.HandlerFunc {
 	fn := func(c *gin.Context) {
+		session := sessions.Default(c)
+		user := session.Get("user")
 
 		var formData CreateFolderForm
 		c.BindJSON(&formData)
@@ -166,15 +185,16 @@ func CreateFolderHandler(db *pgx.Conn) gin.HandlerFunc {
 
 		insertQuery := `
 			insert into
-			files(file_type, name, path)
-			values($1, $2, $3)
+			files(file_type, name, path, owner)
+			values($1, $2, $3, $4)
 		`
 
 		if _, err := db.Exec(context.Background(),
 			insertQuery,
 			"folder",
 			formData.Name,
-			formData.RelativePath); err != nil {
+			formData.RelativePath,
+			user); err != nil {
 
 			c.String(400, "could not create folder.")
 			return
@@ -189,15 +209,21 @@ func CreateFolderHandler(db *pgx.Conn) gin.HandlerFunc {
 
 func DeleteFolderHandler(db *pgx.Conn) gin.HandlerFunc {
 	fn := func(c *gin.Context) {
+		session := sessions.Default(c)
+		user := session.Get("user")
 
 		fidQuery := `
 		select path, name from files
-		where id = $1
+		where 
+		(id = $1)
+		and
+		(owner = $2)
 		`
 
 		rows, err := db.Query(context.Background(),
 			fidQuery,
 			c.Param("id"),
+			user,
 		)
 
 		if err != nil {
@@ -219,11 +245,14 @@ func DeleteFolderHandler(db *pgx.Conn) gin.HandlerFunc {
 		(path like $1)
 		and
 		(loid is not null)
+		and
+		(owner = $2)
 	`
 
 		rows, err = db.Query(context.Background(),
 			findLoQuery,
 			folderPath.String+folderName.String+"%",
+			user,
 		)
 
 		if err != nil {
@@ -268,10 +297,14 @@ func DeleteFolderHandler(db *pgx.Conn) gin.HandlerFunc {
 
 		deleteQuery := `
 			delete from files
-			where 
+			where
+			(
 			(file_type = $1 and id = $2)
 			or
 			(path like $3)
+			)
+			and
+			(owner = $4)
 		`
 
 		if _, err := db.Exec(context.Background(),
@@ -279,6 +312,7 @@ func DeleteFolderHandler(db *pgx.Conn) gin.HandlerFunc {
 			"folder",
 			c.Param("id"),
 			folderPath.String+folderName.String+"%",
+			user,
 		); err != nil {
 			c.String(400, "could not delete folder.")
 			return

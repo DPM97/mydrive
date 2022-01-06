@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 
 	"github.com/DPM97/mydrive/backend/pkg/rand"
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v4"
 )
@@ -36,6 +37,8 @@ func createByteArr(c *gin.Context, file *multipart.FileHeader) (*bytes.Buffer, e
 
 func UploadHandler(db *pgx.Conn) gin.HandlerFunc {
 	fn := func(c *gin.Context) {
+		session := sessions.Default(c)
+		user := session.Get("user")
 
 		file, err := c.FormFile("uploadedFile")
 
@@ -94,8 +97,8 @@ func UploadHandler(db *pgx.Conn) gin.HandlerFunc {
 
 		insertQuery := `
 			insert into
-			files(loid, file_type, name, size, path, pid)
-			values($1, $2, $3, $4, $5, $6)
+			files(loid, file_type, name, size, path, pid, owner)
+			values($1, $2, $3, $4, $5, $6, $7)
 		`
 
 		ext := filepath.Ext(file.Filename)
@@ -107,7 +110,9 @@ func UploadHandler(db *pgx.Conn) gin.HandlerFunc {
 			file.Filename,
 			file.Size,
 			c.Query("relativePath"),
-			rand.Generate(100)); err != nil {
+			rand.Generate(100),
+			user,
+		); err != nil {
 
 		}
 
