@@ -1,6 +1,6 @@
 # Screenshots
 ![image](https://user-images.githubusercontent.com/34420038/148453321-82e6c0f9-9df0-4936-879b-acf120ba5d98.png)
-![image](https://user-images.githubusercontent.com/34420038/148321014-98fb4a36-9764-42ef-ac0c-1443eff2327f.png)
+![image](https://user-images.githubusercontent.com/34420038/148454190-aa6b6716-ec12-4e1c-a94f-263c8183b4cd.png)
 ![image](https://user-images.githubusercontent.com/34420038/148320916-894d68d2-09ee-4bce-93ca-514b82f04743.png)
 
 # Usage
