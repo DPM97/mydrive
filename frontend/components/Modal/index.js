@@ -1,5 +1,6 @@
 import { FiLogIn, FiPlus, FiUserPlus, FiX } from "react-icons/fi"
 import { motion } from "framer-motion"
+import { CircularProgressbar, buildStyles } from 'react-circular-progressbar';
 import QRCode from "react-qr-code";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -7,6 +8,8 @@ import axios from "axios";
 import ReactTooltip from 'react-tooltip';
 import API_URI from '../../functions/uri'
 import Loader from "../Loader";
+
+import 'react-circular-progressbar/dist/styles.css';
 
 const dropIn = {
   hidden: {
@@ -121,6 +124,7 @@ export const LoginModal = ({ onSubmit, onCreateAcct, isLoading }) => (
     </div>
   </div>
 )
+
 export const CreateAcctModal = ({ onSubmit, onLogin, isLoading }) => {
 
   const [qr, setQR] = useState("")
@@ -191,3 +195,28 @@ export const CreateAcctModal = ({ onSubmit, onLogin, isLoading }) => {
     </div>
   )
 }
+
+export const UploadModel = ({ percent }) => (
+  <div className="container flex justify-center mx-auto">
+    <div className="absolute inset-0 flex items-center justify-center bg-opacity-50 bg-gray-700">
+      <motion.div
+        onClick={(e) => e.stopPropagation()}
+        className="w-48 h-48 p-6 rounded-md bg-neutral-200"
+        variants={dropIn}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+      >
+        <CircularProgressbar
+          styles={buildStyles({
+            pathColor: "#14b8a6",
+            textColor: "#bdbdbd",
+            trailColor: "#bdbdbd"
+          })}
+          value={percent}
+          text={`${percent}%`}
+        />;
+      </motion.div>
+    </div>
+  </div>
+)

@@ -2,7 +2,7 @@ import { FiPlus, FiUpload } from "react-icons/fi"
 import axios from 'axios'
 import genRelPath from "../../functions/genRelPath"
 import { useState } from "react"
-import { CreateFolderModal } from "../Modal"
+import { CreateFolderModal, UploadModel } from "../Modal"
 import { AnimatePresence } from "framer-motion"
 import API_URI from "../../functions/uri"
 import StorageBar from "../StorageBar"
@@ -12,8 +12,25 @@ const SidePanel = ({ onChange, slug }) => {
 
   const [isModalActive, setModalActive] = useState(false)
 
+  const [uploader, setUploader] = useState({
+    active: false,
+    percent: 0
+  })
+
+  const handleUploadProgress = (e) => {
+    setUploader({
+      active: true,
+      percent: ((e.loaded / e.total) * 100).toFixed(0)
+    })
+  }
+
   const handleUpload = async (selectedFile) => {
     if (selectedFile === null) return
+
+    setUploader({
+      percent: 0,
+      active: true
+    })
 
     const data = new FormData();
 
@@ -31,13 +48,19 @@ const SidePanel = ({ onChange, slug }) => {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
-          withCredentials: true
+          withCredentials: true,
+          onUploadProgress: handleUploadProgress
         }
       )
       toast.success('File uploaded!')
     } catch (e) {
       toast.error(e.response.data)
     }
+
+    setUploader({
+      active: false,
+      percent: 0
+    })
 
     onChange()
   }
@@ -73,6 +96,9 @@ const SidePanel = ({ onChange, slug }) => {
       >
         {isModalActive && (
           <CreateFolderModal onSubmit={handleNewFolder} setModalActive={setModalActive} isLoading={isLoading} />
+        )}
+        {uploader.active && (
+          <UploadModel percent={uploader.percent} />
         )}
       </AnimatePresence>
 
