@@ -22,9 +22,8 @@ func main() {
 
 	defer dbSession.Close(context.Background())
 
-	godotenv.Load()
-
 	if os.Getenv("PRODUCTION") != "true" {
+		godotenv.Load()
 		gin.SetMode(gin.DebugMode)
 	} else {
 		gin.SetMode(gin.ReleaseMode)
