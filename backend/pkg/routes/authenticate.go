@@ -17,7 +17,7 @@ type LoginBody struct {
 }
 
 const (
-	username = "dmaloy97@gmail.com"
+	username = "myusername"
 )
 
 func AuthRequired(c *gin.Context) {
