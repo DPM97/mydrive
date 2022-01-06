@@ -32,7 +32,7 @@ const dropIn = {
   },
 };
 
-export const CreateFolderModal = ({ setModalActive, onSubmit }) => (
+export const CreateFolderModal = ({ setModalActive, onSubmit, isLoading }) => (
   <div className="container flex justify-center mx-auto">
     <div className="absolute inset-0 flex items-center justify-center bg-opacity-50 bg-gray-700">
       <motion.div

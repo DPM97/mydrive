@@ -34,6 +34,7 @@ const SidePanel = ({ onChange, slug }) => {
           withCredentials: true
         }
       )
+      toast.success('File uploaded!')
     } catch (e) {
       toast.error(e.response.data)
     }
@@ -54,6 +55,7 @@ const SidePanel = ({ onChange, slug }) => {
         },
         { withCredentials: true }
       )
+      toast.success('Folder created!')
     } catch (e) {
       toast.error(e.response.data)
     }

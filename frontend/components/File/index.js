@@ -28,6 +28,7 @@ const File = ({ id, path, uploaded_at, name, file_type, size, pid, onChange }) =
   const deleteFile = async () => {
     try {
       await axios.delete(`${API_URI}/files/${id.Int32}`, { withCredentials: true })
+      toast.success('File deleted!')
     } catch (e) {
       toast.error(e.response.data)
     }
@@ -37,6 +38,7 @@ const File = ({ id, path, uploaded_at, name, file_type, size, pid, onChange }) =
   const deleteFolder = async () => {
     try {
       await axios.delete(`${API_URI}/folders/${id.Int32}`, { withCredentials: true })
+      toast.success('Folder deleted!')
     } catch (e) {
       toast.error(e.response.data)
     }
