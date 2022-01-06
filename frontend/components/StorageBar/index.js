@@ -45,11 +45,29 @@ const StorageBar = () => {
     text: ''
   })
 
+  /*
+
+        {storageData.total.value === "0.00 GB" && (
+        <div class="animate-pulse flex space-x-4">
+          <div class="h-2 bg-gray-700 rounded"></div>
+        </div>
+      )}
+      <p className="text-right w-full">{storageData.total.value}</p>
+
+      */
+
 
   return (
     <div style={{ width: '75%' }} className="text-xs">
-      <p className="text-right w-full">{storageData.total.value}</p>
-      <div className="mb-8 h-4 grid-flow-col grid w-full"
+      {storageData.total.value === "0.00 GB" && (
+        <div className="animate-pulse w-full grid place-items-end">
+          <div className="h-4 bg-gray-200 w-1/2"></div>
+        </div>
+      )}
+      {storageData.total.value !== "0.00 GB" && (
+        <p className="text-right w-full">{storageData.total.value}</p>
+      )}
+      <div className="mb-8 h-4 grid-flow-col grid w-full pt-0.5"
         ref={ref => {
           if (ref && !tt.ref) setTT({ ...tt, ref })
           return tt.ref
