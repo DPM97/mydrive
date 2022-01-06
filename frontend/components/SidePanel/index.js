@@ -41,7 +41,10 @@ const SidePanel = ({ onChange, slug }) => {
     onChange()
   }
 
+  const [isLoading, setIsLoading] = useState(false)
+
   const handleNewFolder = async (name) => {
+    setIsLoading(true)
     try {
       await axios.post(
         `${API_URI}/folders`,
@@ -55,6 +58,7 @@ const SidePanel = ({ onChange, slug }) => {
       toast.error(e.response.data)
     }
 
+    setIsLoading(false)
     onChange()
   }
 
@@ -66,7 +70,7 @@ const SidePanel = ({ onChange, slug }) => {
         onExitComplete={() => null}
       >
         {isModalActive && (
-          <CreateFolderModal onSubmit={handleNewFolder} setModalActive={setModalActive} />
+          <CreateFolderModal onSubmit={handleNewFolder} setModalActive={setModalActive} isLoading={isLoading} />
         )}
       </AnimatePresence>
 

@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import ReactTooltip from 'react-tooltip';
 import API_URI from '../../functions/uri'
+import Loader from "../Loader";
 
 const dropIn = {
   hidden: {
@@ -53,15 +54,20 @@ export const CreateFolderModal = ({ setModalActive, onSubmit }) => (
               className="w-full p-2 border border-gray-300 rounded-l shadow focus:outline-none focus:ring-2 focus:ring-teal-500"
               placeholder="Enter a folder name" />
           </div>
-          <button
-            className="block w-full p-3 font-bold text-white bg-teal-500 rounded-l"
-            onClick={() => {
-              onSubmit(document.getElementById("createFolderName").value)
-              setModalActive(false)
-            }}
-          >
-            <FiPlus className="text-center w-full text-xl" />
-          </button>
+          {!isLoading && (
+            <button
+              className="block w-full p-3 font-bold text-white bg-teal-500 rounded-l"
+              onClick={() => {
+                onSubmit(document.getElementById("createFolderName").value)
+                setModalActive(false)
+              }}
+            >
+              <FiPlus className="text-center w-full text-xl" />
+            </button>
+          )}
+          {isLoading && (
+            <Loader />
+          )}
         </div>
       </motion.div>
     </div>
@@ -69,7 +75,7 @@ export const CreateFolderModal = ({ setModalActive, onSubmit }) => (
 )
 
 
-export const LoginModal = ({ onSubmit, onCreateAcct }) => (
+export const LoginModal = ({ onSubmit, onCreateAcct, isLoading }) => (
   <div className="container flex justify-center mx-auto">
     <div className="absolute inset-0 flex items-center justify-center bg-opacity-50 bg-gray-700">
       <motion.div
@@ -97,20 +103,25 @@ export const LoginModal = ({ onSubmit, onCreateAcct }) => (
               placeholder="XXXXXX" />
           </div>
           <a className="text-xs hover:cursor-pointer text-teal-500" onClick={onCreateAcct}>Create an account!</a>
-          <button
-            className="mt-4 block w-full p-3 font-bold text-white bg-teal-500 rounded-l"
-            onClick={() => {
-              onSubmit(document.getElementById("otp").value, document.getElementById("email").value)
-            }}
-          >
-            <FiLogIn className="text-center w-full text-xl" />
-          </button>
+          {!isLoading && (
+            <button
+              className="mt-4 block w-full p-3 font-bold text-white bg-teal-500 rounded-l"
+              onClick={() => {
+                onSubmit(document.getElementById("otp").value, document.getElementById("email").value)
+              }}
+            >
+              <FiLogIn className="text-center w-full text-xl" />
+            </button>
+          )}
+          {isLoading && (
+            <Loader />
+          )}
         </div>
       </motion.div>
     </div>
   </div>
 )
-export const CreateAcctModal = ({ onSubmit, onLogin }) => {
+export const CreateAcctModal = ({ onSubmit, onLogin, isLoading }) => {
 
   const [qr, setQR] = useState("")
   const [secret, setSecret] = useState("<nil>")
@@ -161,14 +172,19 @@ export const CreateAcctModal = ({ onSubmit, onLogin }) => {
               </div>
               <ReactTooltip place="bottom" effect="solid" />
             </div>
-            <button
-              className="mt-4 block w-full p-3 font-bold text-white bg-teal-500 rounded-l"
-              onClick={() => {
-                onSubmit(document.getElementById("email").value, secret)
-              }}
-            >
-              <FiUserPlus className="text-center w-full text-xl" />
-            </button>
+            {!isLoading && (
+              <button
+                className="mt-4 block w-full p-3 font-bold text-white bg-teal-500 rounded-l"
+                onClick={() => {
+                  onSubmit(document.getElementById("email").value, secret)
+                }}
+              >
+                <FiUserPlus className="text-center w-full text-xl" />
+              </button>
+            )}
+            {isLoading && (
+              <Loader />
+            )}
           </div>
         </motion.div>
       </div>

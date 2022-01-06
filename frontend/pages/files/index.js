@@ -33,7 +33,10 @@ const Files = ({ slug }) => {
     if (resp) setFiles(resp.data)
   }, [slug])
 
+  const [isLoading, setIsLoading] = useState(false)
+
   const login = async (otp, email) => {
+    setIsLoading(true)
     let resp = null
     try {
       resp = await axios.post(`${API_URI}/login`,
@@ -44,10 +47,12 @@ const Files = ({ slug }) => {
       toast.error(e.response.data)
     }
     if (resp) setAuth(true)
+    setIsLoading(false)
     fetchFiles()
   }
 
   const createAcct = async (email, OTPSecret) => {
+    setIsLoading(true)
     try {
       await axios.post(`${API_URI}/accounts`,
         { OTPSecret, email },
@@ -58,6 +63,7 @@ const Files = ({ slug }) => {
       return
     }
     toast.success('Account created successfully! Please log in.')
+    setIsLoading(false)
     setShowCreate(false)
   }
 
@@ -74,12 +80,12 @@ const Files = ({ slug }) => {
         pauseOnHover
       />
       {!showCreate && !authorized && (
-        <LoginModal setModalActive={setAuth} onSubmit={login} onCreateAcct={() => {
+        <LoginModal setModalActive={setAuth} onSubmit={login} isLoading={isLoading} onCreateAcct={() => {
           setShowCreate(true)
         }} />
       )}
       {showCreate && !authorized && (
-        <CreateAcctModal onSubmit={createAcct} onLogin={() => {
+        <CreateAcctModal onSubmit={createAcct} isLoading={isLoading} onLogin={() => {
           setShowCreate(false)
         }} />
       )}
