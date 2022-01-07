@@ -1,7 +1,7 @@
 import { FiPlus, FiUpload } from "react-icons/fi"
 import axios from 'axios'
 import genRelPath from "../../functions/genRelPath"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { CreateFolderModal, UploadModel } from "../Modal"
 import { AnimatePresence } from "framer-motion"
 import API_URI from "../../functions/uri"
@@ -17,44 +17,59 @@ const SidePanel = ({ onChange, slug }) => {
     percent: 0
   })
 
-  const handleUploadProgress = (e) => {
+  const handleUploadProgress = (e, total) => {
     setUploader({
       active: true,
-      percent: ((e.loaded / e.total) * 100).toFixed(0)
+      percent: ((e.loaded / total) * 100).toFixed(0)
     })
   }
 
-  const handleUpload = async (selectedFile) => {
-    if (selectedFile === null) return
+  const handleUpload = async (selectedFiles) => {
+    selectedFiles = Array.from(selectedFiles)
+
+    if (selectedFiles.length === 0) return
+
+    let totalSize = 0
+
+    selectedFiles.forEach(file => {
+      totalSize += file.size
+    })
 
     setUploader({
       percent: 0,
       active: true
     })
 
-    const data = new FormData();
+    let err = false
+    for (let file of selectedFiles) {
+      const data = new FormData();
 
-    data.append(
-      "uploadedFile",
-      selectedFile,
-      selectedFile.name
-    );
+      data.append(
+        "uploadedFile",
+        file,
+        file.name
+      );
 
-    try {
-      await axios.post(
-        `${API_URI}/files?relativePath=${genRelPath(slug)}`,
-        data,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-          withCredentials: true,
-          onUploadProgress: handleUploadProgress
-        }
-      )
-      toast.success('File uploaded!')
-    } catch (e) {
-      toast.error(e.response.data)
+      try {
+        await axios.post(
+          `${API_URI}/files?relativePath=${genRelPath(slug)}`,
+          data,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+            withCredentials: true,
+            onUploadProgress: (e) => handleUploadProgress(e, totalSize)
+          }
+        )
+      } catch (e) {
+        err = true
+        toast.error(e.response.data)
+      }
+    }
+
+    if (!err) {
+      toast.success(`File${selectedFiles.length > 1 ? 's' : ''} uploaded!`)
     }
 
     setUploader({
@@ -65,20 +80,103 @@ const SidePanel = ({ onChange, slug }) => {
     onChange()
   }
 
+  const handleUploadFolder = async (selectedFiles) => {
+    selectedFiles = Array.from(selectedFiles)
+
+    if (selectedFiles.length === 0) return
+
+    let totalSize = 0
+
+    selectedFiles.forEach(file => {
+      totalSize += file.size
+    })
+
+    setUploader({
+      percent: 0,
+      active: true
+    })
+
+    selectedFiles = selectedFiles.sort((a, b) =>
+      a.webkitRelativePath.split('/').length
+      -
+      b.webkitRelativePath.split('/').length
+    )
+
+    let createdFolders = []
+
+    let err = false
+    for (let file of selectedFiles) {
+      let relPath = file.webkitRelativePath.split('/')
+      relPath.pop()
+
+      let folderPath = relPath.join('/')
+
+      if (!createdFolders.includes(folderPath)) {
+        let folderName = relPath[relPath.length - 1]
+        let path = [...relPath]
+        path.pop()
+        path = path.join('/')
+
+
+        await handleNewFolder(folderName, path === '' ? '' : path + '/')
+
+        createdFolders.push(folderPath)
+      }
+
+      const data = new FormData();
+
+      data.append(
+        "uploadedFile",
+        file,
+        file.name
+      );
+
+      try {
+        await axios.post(
+          `${API_URI}/files?relativePath=${genRelPath(slug)}${relPath.join('/')}/`,
+          data,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+            withCredentials: true,
+            onUploadProgress: (e) => handleUploadProgress(e, totalSize)
+          }
+        )
+      } catch (e) {
+        err = true
+        toast.error(e.response.data)
+      }
+    }
+
+
+    if (!err) {
+      toast.success(`File${selectedFiles.length > 1 ? 's' : ''} uploaded!`)
+    }
+
+    setUploader({
+      active: false,
+      percent: 0
+    })
+
+    onChange()
+
+  }
+
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleNewFolder = async (name) => {
+  const handleNewFolder = async (name, path = null) => {
     setIsLoading(true)
     try {
       await axios.post(
         `${API_URI}/folders`,
         {
-          relativePath: genRelPath(slug),
+          relativePath: path ? genRelPath(slug) + path : genRelPath(slug),
           name
         },
         { withCredentials: true }
       )
-      toast.success('Folder created!')
+      if (path === null) toast.success('Folder created!')
     } catch (e) {
       toast.error(e.response.data)
     }
@@ -86,6 +184,13 @@ const SidePanel = ({ onChange, slug }) => {
     setIsLoading(false)
     onChange()
   }
+
+  // react doesn't support this for some reason so we need to do it manually
+  useEffect(() => {
+    document.getElementById('folderUpload').setAttribute('directory', true)
+    document.getElementById('folderUpload').setAttribute('webkitdirectory', true)
+    document.getElementById('folderUpload').setAttribute('mozdirectory', true)
+  })
 
   return (
     <>
@@ -104,22 +209,38 @@ const SidePanel = ({ onChange, slug }) => {
 
       <div className="grid grid-cols-1 place-items-center mt-5 gap-2">
         <StorageBar />
-        <div>
+        <div className="w-full pl-5 pr-5">
           <input type="file" id="fileUpload" className="hidden"
-            onChange={(e) => handleUpload(e.target.files[0])}
+            multiple
+            onChange={(e) => handleUpload(e.target.files)}
           />
           <button
-            className="bg-neutral-300 hover:bg-neutral-400 text-white text-md font-bold py-2 px-4 rounded-sm"
+            className="bg-neutral-300 hover:bg-neutral-400 text-white text-sm font-bold py-2 px-4 rounded-sm w-full"
             onClick={() => document.getElementById("fileUpload").click()}
           >
             <div>
-              <FiUpload className="inline-block mr-2 text-xl" />Upload File
+              <FiUpload className="inline-block mr-2 text-xl" />Upload Files
             </div>
           </button>
         </div>
-        <div>
+
+        <div className="w-full pl-5 pr-5">
+          <input type="file" id="folderUpload" className="hidden"
+            onChange={(e) => handleUploadFolder(e.target.files)}
+          />
           <button
-            className="bg-neutral-300 hover:bg-neutral-400 text-white text-md font-bold py-2 px-4 rounded-sm"
+            className="bg-neutral-300 hover:bg-neutral-400 text-white text-sm font-bold py-2 px-4 rounded-sm w-full"
+            onClick={() => document.getElementById("folderUpload").click()}
+          >
+            <div>
+              <FiUpload className="inline-block mr-2 text-xl" />Upload Folder
+            </div>
+          </button>
+        </div>
+
+        <div className="w-full pl-5 pr-5">
+          <button
+            className="bg-neutral-300 hover:bg-neutral-400 text-white text-sm font-bold py-2 px-4 rounded-sm w-full"
             onClick={() => setModalActive(true)}
           >
             <div>
