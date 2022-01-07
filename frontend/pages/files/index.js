@@ -60,6 +60,7 @@ const Files = ({ slug }) => {
       )
     } catch (e) {
       toast.error(e.response.data)
+      setIsLoading(false)
       return
     }
     toast.success('Account created successfully! Please log in.')

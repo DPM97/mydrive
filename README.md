@@ -23,9 +23,11 @@ I am currently running this on my raspberry pi to store personal files and can p
 - Folder creation
 - Public link sharing for viewing pdf files
 - Storage statistics
+- User/Email whitelisting
 
 ## Enviornment variables
 - SESSION_SECRET: Any session secret.
+- WHITELIST: A comma delimited string of emails if you only want certain people to make accounts.
 - PRODUCTION: Boolean, set to true if you are running the application in a production environment.
 - NEXT_PUBLIC_API_URI: The url where the backend/api portion of the application will be accessed in production. This gets rid of a lot of cors issues and using a reverse proxy like *nginx* you can have *https://myurl.com/api/v1* proxy to the backend. This would be what you set **NEXT_PUBLIC_API_URI** equal to.
 
