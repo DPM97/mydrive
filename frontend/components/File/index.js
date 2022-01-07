@@ -48,12 +48,12 @@ const File = ({ id, path, uploaded_at, name, file_type, size, pid, onChange }) =
   return (
     <div className="border-2 h-40 w-72 rounded-lg grid"
       style={{
-        gridTemplateColumns: '3fr 1fr'
+        gridTemplateColumns: 'minmax(0, 3fr) 1fr'
       }}
     >
       <div className="h-full p-3">
         {file_type.String !== "folder" && (
-          <div className="h-full">
+          <div className="h-full break-words">
             <p className="text-sm font-bold h-3/4">
               {name.String}
             </p>
