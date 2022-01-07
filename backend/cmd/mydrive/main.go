@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"log"
 	"os"
 
@@ -10,7 +9,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"github.com/jackc/pgx/v4"
+	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/joho/godotenv"
 )
 
@@ -18,7 +17,7 @@ func main() {
 	log.Println("Attempting db connection...")
 	dbSession := db.CreateDbSession()
 
-	defer dbSession.Close(context.Background())
+	defer dbSession.Close()
 
 	if os.Getenv("PRODUCTION") != "true" {
 		godotenv.Load()
@@ -54,22 +53,22 @@ func main() {
 	log.Fatal(router.Run(":" + port))
 }
 
-func init_routes(router *gin.Engine, db *pgx.Conn) {
-	router.GET("/download/:id", routes.AuthRequired, routes.DownloadHandler(db))
+func init_routes(router *gin.Engine, pool *pgxpool.Pool) {
+	router.GET("/download/:id", routes.AuthRequired, db.FetchConnection(pool), routes.DownloadHandler)
 
-	router.POST("/files", routes.AuthRequired, routes.UploadHandler(db))
-	router.GET("/files", routes.AuthRequired, routes.FetchDocumentHandler(db))
-	router.DELETE("/files/:id", routes.AuthRequired, routes.DeleteDocumentHandler(db))
-	router.GET("/files/:id", routes.DownloadHandler(db))
+	router.POST("/files", routes.AuthRequired, db.FetchConnection(pool), routes.UploadHandler)
+	router.GET("/files", routes.AuthRequired, db.FetchConnection(pool), routes.FetchDocumentHandler)
+	router.DELETE("/files/:id", routes.AuthRequired, db.FetchConnection(pool), routes.DeleteDocumentHandler)
+	router.GET("/files/:id", db.FetchConnection(pool), routes.DownloadHandler)
 
-	router.POST("/folders", routes.AuthRequired, routes.CreateFolderHandler(db))
-	router.DELETE("/folders/:id", routes.AuthRequired, routes.DeleteFolderHandler(db))
+	router.POST("/folders", routes.AuthRequired, db.FetchConnection(pool), routes.CreateFolderHandler)
+	router.DELETE("/folders/:id", routes.AuthRequired, db.FetchConnection(pool), routes.DeleteFolderHandler)
 
-	router.GET("/qr", routes.FetchQRHandler(db))
-	router.POST("/accounts", routes.CreateAcctHandler(db))
+	router.GET("/qr", routes.FetchQRHandler)
+	router.POST("/accounts", db.FetchConnection(pool), routes.CreateAcctHandler)
 
-	router.POST("/login", routes.LoginHandler(db))
-	router.GET("/logout", routes.LogoutHandler())
+	router.POST("/login", db.FetchConnection(pool), routes.LoginHandler)
+	router.GET("/logout", db.FetchConnection(pool), routes.LogoutHandler)
 
-	router.GET("/storage", routes.AuthRequired, routes.FetchStorageHandler(db))
+	router.GET("/storage", routes.AuthRequired, routes.FetchStorageHandler)
 }

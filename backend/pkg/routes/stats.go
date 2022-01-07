@@ -11,7 +11,6 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jackc/pgx/v4"
 	"golang.org/x/sys/unix"
 )
 
@@ -115,39 +114,34 @@ func fetchDiskUsage(volumeName string) (*DiskStats, error) {
 	return stats, nil
 }
 
-func FetchStorageHandler(db *pgx.Conn) gin.HandlerFunc {
-	fn := func(c *gin.Context) {
+func FetchStorageHandler(c *gin.Context) {
+	stats, err := fetchDiskUsage("db_my_dbdata")
 
-		stats, err := fetchDiskUsage("db_my_dbdata")
-
-		if err != nil {
-			c.String(http.StatusBadRequest, "Failed to fetch disk usage data.")
-			return
-		}
-
-		formatted := &FormattedDiskStats{}
-
-		usedByMisc := float64(stats.All) - (float64(stats.Avail) + float64(stats.Used))
-
-		updatedAll := float64(stats.All) - usedByMisc
-
-		formatted.Total = &DiskDataType{
-			Value: strconv.FormatFloat(toFixed(updatedAll/float64(GB), 2), 'f', 2, 64) + " GB",
-		}
-
-		formatted.Used = &DiskDataType{
-			Percent: toFixed(float64(stats.Used)/updatedAll*100, 2),
-			Value:   strconv.FormatFloat(toFixed(float64(stats.Used)/float64(GB), 2), 'f', 2, 64) + " GB",
-		}
-
-		formatted.Free = &DiskDataType{
-			Percent: toFixed(float64(stats.Avail)/updatedAll*100, 2),
-			Value:   strconv.FormatFloat(toFixed(float64(stats.Avail)/float64(GB), 2), 'f', 2, 64) + " GB",
-		}
-
-		c.JSON(http.StatusOK, formatted)
+	if err != nil {
+		c.String(http.StatusBadRequest, "Failed to fetch disk usage data.")
 		return
 	}
 
-	return gin.HandlerFunc(fn)
+	formatted := &FormattedDiskStats{}
+
+	usedByMisc := float64(stats.All) - (float64(stats.Avail) + float64(stats.Used))
+
+	updatedAll := float64(stats.All) - usedByMisc
+
+	formatted.Total = &DiskDataType{
+		Value: strconv.FormatFloat(toFixed(updatedAll/float64(GB), 2), 'f', 2, 64) + " GB",
+	}
+
+	formatted.Used = &DiskDataType{
+		Percent: toFixed(float64(stats.Used)/updatedAll*100, 2),
+		Value:   strconv.FormatFloat(toFixed(float64(stats.Used)/float64(GB), 2), 'f', 2, 64) + " GB",
+	}
+
+	formatted.Free = &DiskDataType{
+		Percent: toFixed(float64(stats.Avail)/updatedAll*100, 2),
+		Value:   strconv.FormatFloat(toFixed(float64(stats.Avail)/float64(GB), 2), 'f', 2, 64) + " GB",
+	}
+
+	c.JSON(http.StatusOK, formatted)
+	return
 }
