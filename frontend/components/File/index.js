@@ -77,7 +77,9 @@ const File = ({ id, path, uploaded_at, name, file_type, size, pid, onChange }) =
         )}
       </div>
       <div className="bg-neutral-200 rounded-r-md grid grid-cols-1 text-center place-content-center gap-5">
-        <Button OnClick={download} Icon={FiDownload} />
+        {file_type.String !== "folder" && (
+          <Button OnClick={download} Icon={FiDownload} />
+        )}
         {file_type.String === "folder" && (
           <Button OnClick={deleteFolder} Icon={FiTrash} />
         )}
