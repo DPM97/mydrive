@@ -33,45 +33,6 @@ func AuthRequired(c *gin.Context) {
 	return
 }
 
-func CheckIfPublicHandler(db *pgx.Conn) gin.HandlerFunc {
-	fn := func(c *gin.Context) {
-		session := sessions.Default(c)
-		user := session.Get("user")
-
-		if user != nil && len(c.Param("id")) != 100 {
-			return
-		}
-
-		fetchByPIDQuery := `
-      select id from files
-      where pid = $1
-    `
-
-		rows, err := db.Query(context.Background(), fetchByPIDQuery, c.Param("id"))
-
-		if err != nil {
-			c.String(http.StatusBadRequest, "Could not fetch file.")
-			return
-		}
-
-		rows.Next()
-
-		var id sql.NullInt32
-		rows.Scan(&id)
-
-		rows.Close()
-
-		if id.Valid == false {
-			c.String(http.StatusNotFound, "File does not exist.")
-			return
-		}
-
-		c.Next()
-	}
-
-	return gin.HandlerFunc(fn)
-}
-
 // include email in here so we can make sure they match when making the final request
 type FetchQRResponse struct {
 	URI    string `json:"uri"`

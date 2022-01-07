@@ -25,10 +25,10 @@ func DownloadHandler(db *pgx.Conn) gin.HandlerFunc {
 		documentID := c.Param("id")
 
 		intID, err := strconv.Atoi(documentID)
-
+		// if docID can't be an integer then we know that we
+		// are either working with a 404 or public file
 		if err != nil {
-			c.String(200, "could not convert id to integer.")
-			return
+			intID = -1
 		}
 
 		rows, err := db.Query(context.Background(), findQuery, documentID, user, intID)
