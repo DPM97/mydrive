@@ -215,7 +215,7 @@ export const UploadModel = ({ percent }) => (
           })}
           value={percent}
           text={`${percent}%`}
-        />;
+        />
       </motion.div>
     </div>
   </div>
