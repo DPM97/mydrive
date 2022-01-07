@@ -27,6 +27,7 @@ I am currently running this on my raspberry pi to store personal files and can p
 - Folder uploading
 
 ## Enviornment variables
+- MAX_MEMORY: Optional, integer representing the max buffer size for file uploads. The deafult is 32MiB.
 - SESSION_SECRET: Any session secret.
 - WHITELIST: A comma delimited string of emails if you only want certain people to make accounts.
 - PRODUCTION: Boolean, set to true if you are running the application in a production environment.

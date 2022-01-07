@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
+	"strconv"
 
 	"github.com/DPM97/mydrive/backend/pkg/db"
 	"github.com/DPM97/mydrive/backend/pkg/routes"
@@ -46,6 +48,17 @@ func main() {
 	newPort, portExists := os.LookupEnv("PORT")
 	if portExists {
 		port = newPort
+	}
+
+	if max, isSet := os.LookupEnv("MAX_MEMORY"); isSet == true {
+		maxAsInt, err := strconv.Atoi(max)
+
+		if err != nil {
+			fmt.Println("There was an error converting the MAX_MEMORY env var to an integer.")
+			os.Exit(1)
+		}
+
+		router.MaxMultipartMemory = int64(maxAsInt) << 20
 	}
 
 	init_routes(router, dbSession)
