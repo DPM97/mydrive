@@ -24,6 +24,7 @@ I am currently running this on my raspberry pi to store personal files and can p
 - Public link sharing for viewing pdf files
 - Storage statistics
 - User/Email whitelisting
+- Folder uploading
 
 ## Enviornment variables
 - SESSION_SECRET: Any session secret.

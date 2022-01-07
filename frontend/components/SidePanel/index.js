@@ -42,6 +42,8 @@ const SidePanel = ({ onChange, slug }) => {
 
     let err = false
     for (let file of selectedFiles) {
+      if (file.name.startsWith('.')) continue;
+
       const data = new FormData();
 
       data.append(
@@ -106,6 +108,8 @@ const SidePanel = ({ onChange, slug }) => {
 
     let err = false
     for (let file of selectedFiles) {
+      if (file.name.startsWith('.')) continue;
+
       let relPath = file.webkitRelativePath.split('/')
       relPath.pop()
 
