@@ -6,6 +6,8 @@ import (
 	"encoding/base32"
 	"net/http"
 	"net/url"
+	"os"
+	"strings"
 
 	"github.com/DPM97/mydrive/backend/pkg/auth"
 	"github.com/DPM97/mydrive/backend/pkg/rand"
@@ -70,9 +72,27 @@ type CreateAcctBody struct {
 
 func CreateAcctHandler(db *pgx.Conn) gin.HandlerFunc {
 	fn := func(c *gin.Context) {
-
 		var formData CreateAcctBody
 		c.BindJSON(&formData)
+
+		// deal with whitelist stuff
+		if wl, exists := os.LookupEnv("WHITELIST"); exists == true {
+			// split into array of emails
+			wlEmails := strings.Split(wl, ",")
+
+			found := false
+			for _, email := range wlEmails {
+				if formData.Email == email {
+					found = true
+				}
+			}
+
+			if found == false {
+				c.String(http.StatusUnauthorized, "The server owner has not whitelisted this email.")
+				return
+			}
+
+		}
 
 		createTableQuery := `
       create table if not exists users(

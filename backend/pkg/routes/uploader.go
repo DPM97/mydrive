@@ -6,6 +6,7 @@ import (
 	"errors"
 	"io"
 	"mime/multipart"
+	"net/http"
 	"path/filepath"
 
 	"github.com/DPM97/mydrive/backend/pkg/rand"
@@ -43,20 +44,20 @@ func UploadHandler(db *pgx.Conn) gin.HandlerFunc {
 		file, err := c.FormFile("uploadedFile")
 
 		if err != nil {
-			c.String(400, err.Error())
+			c.String(http.StatusBadRequest, err.Error())
 			return
 		}
 
 		buffer, err := createByteArr(c, file)
 
 		if err != nil {
-			c.String(400, err.Error())
+			c.String(http.StatusBadRequest, err.Error())
 		}
 
 		tx, err := db.Begin(context.Background())
 
 		if err != nil {
-			c.String(400, err.Error())
+			c.String(http.StatusBadRequest, err.Error())
 			return
 		}
 
@@ -64,33 +65,33 @@ func UploadHandler(db *pgx.Conn) gin.HandlerFunc {
 
 		loid, err := lo.Create(context.Background(), 0)
 		if err != nil {
-			c.String(400, "failed to create object.")
+			c.String(http.StatusBadRequest, "failed to create object.")
 			tx.Rollback(context.TODO())
 			return
 		}
 
 		obj, err := lo.Open(context.Background(), loid, pgx.LargeObjectModeWrite)
 		if err != nil {
-			c.String(400, "failed to open object.")
+			c.String(http.StatusBadRequest, "failed to open object.")
 			tx.Rollback(context.TODO())
 			return
 		}
 
 		n, err := obj.Write(buffer.Bytes())
 		if err != nil {
-			c.String(400, "failed to write object.")
+			c.String(http.StatusBadRequest, "failed to write object.")
 			tx.Rollback(context.TODO())
 			return
 		}
 
 		if n != int(file.Size) {
-			c.String(400, "Expected n to be %d, got %d", int(file.Size), n)
+			c.String(http.StatusBadRequest, "Expected n to be %d, got %d", int(file.Size), n)
 			tx.Rollback(context.TODO())
 			return
 		}
 
 		if err := tx.Commit(context.Background()); err != nil {
-			c.String(400, "failed to write object.")
+			c.String(http.StatusBadRequest, "failed to write object.")
 			tx.Rollback(context.TODO())
 			return
 		}

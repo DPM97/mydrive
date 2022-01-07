@@ -3,6 +3,7 @@ package routes
 import (
 	"context"
 	"database/sql"
+	"net/http"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -45,7 +46,7 @@ func FetchDocumentHandler(db *pgx.Conn) gin.HandlerFunc {
 		`
 
 		if _, err := db.Exec(context.Background(), createQuery); err != nil {
-			c.String(400, "failed to create files table.")
+			c.String(http.StatusBadRequest, "failed to create files table.")
 			return
 		}
 
@@ -61,7 +62,7 @@ func FetchDocumentHandler(db *pgx.Conn) gin.HandlerFunc {
 		rows, err := db.Query(context.Background(), fetchQuery, relPath, user)
 
 		if err != nil {
-			c.String(400, "query failed")
+			c.String(http.StatusBadRequest, "query failed")
 			return
 		}
 
@@ -109,7 +110,7 @@ func DeleteDocumentHandler(db *pgx.Conn) gin.HandlerFunc {
 		rows, err := db.Query(context.Background(), findLoQuery, c.Param("id"), user)
 
 		if err != nil {
-			c.String(400, "no document with this id exists.")
+			c.String(http.StatusBadRequest, "no document with this id exists.")
 			return
 		}
 
@@ -125,7 +126,7 @@ func DeleteDocumentHandler(db *pgx.Conn) gin.HandlerFunc {
 
 		if err != nil {
 
-			c.String(400, "failed to start transaction.")
+			c.String(http.StatusBadRequest, "failed to start transaction.")
 			tx.Rollback(context.TODO())
 			return
 		}
@@ -133,13 +134,13 @@ func DeleteDocumentHandler(db *pgx.Conn) gin.HandlerFunc {
 		lo := tx.LargeObjects()
 
 		if err := lo.Unlink(context.Background(), uint32(loid.Int32)); err != nil {
-			c.String(400, "failed to remove large object for file.")
+			c.String(http.StatusBadRequest, "failed to remove large object for file.")
 			tx.Rollback(context.TODO())
 			return
 		}
 
 		if err := tx.Commit(context.Background()); err != nil {
-			c.String(400, "failed to commit transaction.")
+			c.String(http.StatusBadRequest, "failed to commit transaction.")
 			tx.Rollback(context.TODO())
 			return
 		}
@@ -157,7 +158,7 @@ func DeleteDocumentHandler(db *pgx.Conn) gin.HandlerFunc {
 			c.Param("id"),
 			user,
 		); err != nil {
-			c.String(400, "could not delete file.")
+			c.String(http.StatusBadRequest, "could not delete file.")
 			return
 		}
 
@@ -196,7 +197,7 @@ func CreateFolderHandler(db *pgx.Conn) gin.HandlerFunc {
 			formData.RelativePath,
 			user); err != nil {
 
-			c.String(400, "could not create folder.")
+			c.String(http.StatusBadRequest, "could not create folder.")
 			return
 		}
 
@@ -227,7 +228,7 @@ func DeleteFolderHandler(db *pgx.Conn) gin.HandlerFunc {
 		)
 
 		if err != nil {
-			c.String(400, "no document with this id exists.")
+			c.String(http.StatusBadRequest, "no document with this id exists.")
 			return
 		}
 
@@ -256,7 +257,7 @@ func DeleteFolderHandler(db *pgx.Conn) gin.HandlerFunc {
 		)
 
 		if err != nil {
-			c.String(400, "error fetching large objects.")
+			c.String(http.StatusBadRequest, "error fetching large objects.")
 			return
 		}
 
@@ -274,7 +275,7 @@ func DeleteFolderHandler(db *pgx.Conn) gin.HandlerFunc {
 
 		if err != nil {
 
-			c.String(400, "failed to start transaction.")
+			c.String(http.StatusBadRequest, "failed to start transaction.")
 			tx.Rollback(context.TODO())
 			return
 		}
@@ -283,14 +284,14 @@ func DeleteFolderHandler(db *pgx.Conn) gin.HandlerFunc {
 
 		for _, loid := range loids {
 			if err := lo.Unlink(context.Background(), loid); err != nil {
-				c.String(400, "failed to remove object.")
+				c.String(http.StatusBadRequest, "failed to remove object.")
 				tx.Rollback(context.TODO())
 				return
 			}
 		}
 
 		if err := tx.Commit(context.Background()); err != nil {
-			c.String(400, "failed to commit transaction.")
+			c.String(http.StatusBadRequest, "failed to commit transaction.")
 			tx.Rollback(context.TODO())
 			return
 		}
@@ -314,7 +315,7 @@ func DeleteFolderHandler(db *pgx.Conn) gin.HandlerFunc {
 			folderPath.String+folderName.String+"%",
 			user,
 		); err != nil {
-			c.String(400, "could not delete folder.")
+			c.String(http.StatusBadRequest, "could not delete folder.")
 			return
 		}
 

@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"net/http"
 	"strconv"
 
 	"github.com/gin-contrib/sessions"
@@ -55,7 +56,7 @@ func DownloadHandler(db *pgx.Conn) gin.HandlerFunc {
 		tx, err := db.Begin(context.Background())
 
 		if err != nil {
-			c.String(400, "failed to start transaction.")
+			c.String(http.StatusBadRequest, "failed to start transaction.")
 			tx.Rollback(context.TODO())
 			return
 		}
@@ -64,7 +65,7 @@ func DownloadHandler(db *pgx.Conn) gin.HandlerFunc {
 
 		obj, err := lo.Open(context.Background(), uint32(loid.Int32), pgx.LargeObjectModeRead)
 		if err != nil {
-			c.String(400, "failed to open object.")
+			c.String(http.StatusBadRequest, "failed to open object.")
 			tx.Rollback(context.TODO())
 			return
 		}
@@ -74,13 +75,13 @@ func DownloadHandler(db *pgx.Conn) gin.HandlerFunc {
 		n, err := obj.Read(p)
 
 		if err != nil || n != int(size.Int32) {
-			c.String(400, "failed to read object.")
+			c.String(http.StatusBadRequest, "failed to read object.")
 			tx.Rollback(context.TODO())
 			return
 		}
 
 		if err := tx.Commit(context.Background()); err != nil {
-			c.String(400, "failed to read object.")
+			c.String(http.StatusBadRequest, "failed to read object.")
 			return
 		}
 
