@@ -27,6 +27,7 @@ I am currently running this on my raspberry pi to store personal files and can p
 - Folder uploading
 
 ## Enviornment variables
+- CORS_ORIGINS: A comma delimited string of cors origins that you want to permit (ie. the uri of your frontend app)
 - MAX_MEMORY: Optional, integer representing the max buffer size for file uploads. The deafult is 32MiB.
 - SESSION_SECRET: Any session secret.
 - WHITELIST: A comma delimited string of emails if you only want certain people to make accounts.

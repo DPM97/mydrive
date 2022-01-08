@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/DPM97/mydrive/backend/pkg/db"
 	"github.com/DPM97/mydrive/backend/pkg/routes"
@@ -32,12 +33,9 @@ func main() {
 
 	corsConfig := cors.DefaultConfig()
 	corsConfig.AllowCredentials = true
-	corsConfig.AllowOrigins = []string{
-		"http://localhost:3000",
-		"http://192.168.86.27:3000",
-		"http://192.168.86.27",
-		"http://storage.dollon.dev",
-		"https://storage.dollon.dev",
+
+	if origins, isSet := os.LookupEnv("CORS_ORIGINS"); isSet == true {
+		corsConfig.AllowOrigins = strings.Split(origins, ",")
 	}
 
 	router.Use(cors.New(corsConfig))
