@@ -211,7 +211,7 @@ const SidePanel = ({ onChange, slug }) => {
         )}
       </AnimatePresence>
 
-      <div className="grid grid-cols-1 place-items-center mt-5 gap-2">
+      <div className="grid grid-cols-1 place-items-center mt-5 gap-2 w-3/4 m-auto sm:w-full">
         <StorageBar />
         <div className="w-full pl-5 pr-5">
           <input type="file" id="fileUpload" className="hidden"

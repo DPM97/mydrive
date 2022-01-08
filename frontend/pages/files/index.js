@@ -92,12 +92,9 @@ const Files = ({ slug }) => {
       )}
       <Header setFiles={setFiles} setAuth={setAuth} />
       <div
-        className="grid w-full"
-        style={{
-          gridTemplateColumns: '200px calc(100% - 200px)'
-        }}
+        className="grid w-full sm:grid-cols-sidePanel grid-rows-sidePanel"
       >
-        <div className="bg-neutral-100 min-w-max" style={{ minHeight: 'calc(100vh - 85px)' }}>
+        <div className="bg-neutral-100 min-w-max sm:min-h-sidePanel min-h-sidePanelMobile">
           <SidePanel onChange={fetchFiles} slug={slug} />
         </div>
         <div>
