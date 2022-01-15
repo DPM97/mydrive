@@ -7,23 +7,36 @@ import parseTime from "../../functions/parseTime"
 import API_URI from "../../functions/uri"
 import Button from "../Button"
 
-const File = ({ id, path, uploaded_at, name, file_type, size, pid, onChange }) => {
-  const sizeInMb = size.Int32 / 1000000
+export const download = async (id, name = null) => {
+  let resp
+  try {
+    resp = await axios.get(`${API_URI}/download/${id}`, { responseType: 'blob', withCredentials: true })
+  } catch (e) {
+    toast.error(e.response.data)
+    return
+  }
+  const url = window.URL.createObjectURL(new Blob([resp.data]));
+  const link = document.createElement('a');
+  link.href = url;
 
-  const download = async () => {
-    let resp
+  if (!name) {
     try {
-      resp = await axios.get(`${API_URI}/download/${id.Int32}`, { responseType: 'blob', withCredentials: true })
+      resp = await axios.get(`${API_URI}/files/public/${id}`, { withCredentials: true })
     } catch (e) {
       toast.error(e.response.data)
+      return
     }
-    const url = window.URL.createObjectURL(new Blob([resp.data]));
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', name.String);
-    document.body.appendChild(link);
-    link.click();
+
+    name = resp.data.name
   }
+
+  link.setAttribute('download', name);
+  document.body.appendChild(link);
+  link.click();
+}
+
+const File = ({ id, path, uploaded_at, name, file_type, size, pid, onChange }) => {
+  const sizeInMb = size.Int32 / 1000000
 
   const deleteFile = async () => {
     try {
@@ -78,7 +91,7 @@ const File = ({ id, path, uploaded_at, name, file_type, size, pid, onChange }) =
       </div>
       <div className="bg-neutral-200 rounded-r-md grid grid-cols-1 text-center place-content-center gap-5">
         {file_type.String !== "folder" && (
-          <Button OnClick={download} Icon={FiDownload} />
+          <Button OnClick={() => download(id.Int32, name.String)} Icon={FiDownload} />
         )}
         {file_type.String === "folder" && (
           <Button OnClick={deleteFolder} Icon={FiTrash} />

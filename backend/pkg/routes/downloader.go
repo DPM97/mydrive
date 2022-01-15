@@ -52,10 +52,6 @@ func DownloadHandler(c *gin.Context) {
 	var f_name sql.NullString
 	rows.Scan(&loid, &size, &f_name)
 
-	fmt.Println(loid)
-	fmt.Println(size)
-	fmt.Println(f_name)
-
 	rows.Close()
 
 	// begin fetch sequence

@@ -71,6 +71,7 @@ func init_routes(router *gin.Engine, pool *pgxpool.Pool) {
 	router.GET("/files", routes.AuthRequired, db.FetchConnection(pool), routes.FetchDocumentHandler)
 	router.DELETE("/files/:id", routes.AuthRequired, db.FetchConnection(pool), routes.DeleteDocumentHandler)
 	router.GET("/files/:id", db.FetchConnection(pool), routes.DownloadHandler)
+	router.GET("/files/public/:pid", db.FetchConnection(pool), routes.FetchDocumentByPIDHandler)
 
 	router.POST("/folders", routes.AuthRequired, db.FetchConnection(pool), routes.CreateFolderHandler)
 	router.DELETE("/folders/:id", routes.AuthRequired, db.FetchConnection(pool), routes.DeleteFolderHandler)

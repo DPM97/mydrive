@@ -96,6 +96,44 @@ func FetchDocumentHandler(c *gin.Context) {
 	return
 }
 
+type PIDResp struct {
+	Name string `json:"name"`
+}
+
+func FetchDocumentByPIDHandler(c *gin.Context) {
+	db, err := db.FetchConn(c)
+	if err != nil {
+		c.String(http.StatusBadRequest, "Failed to fetch the connection from the request context.")
+		return
+	}
+
+	fetchQuery := `
+			select name from files
+			where pid = $1
+		`
+
+	rows, err := db.Query(context.Background(), fetchQuery, c.Param("pid"))
+
+	if err != nil {
+		c.String(http.StatusNotFound, "no document with this pid exists.")
+		return
+	}
+
+	rows.Next()
+
+	var name sql.NullString
+	rows.Scan(
+		&name,
+	)
+	rows.Close()
+
+	c.JSON(200, &PIDResp{
+		Name: name.String,
+	})
+	return
+
+}
+
 func DeleteDocumentHandler(c *gin.Context) {
 	db, err := db.FetchConn(c)
 	if err != nil {
