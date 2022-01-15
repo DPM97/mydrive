@@ -21,7 +21,7 @@ I am currently running this on my raspberry pi to store personal files and can p
 - Multiple user support
 - File storage
 - Folder creation
-- Public link sharing for viewing pdf files
+- Public link sharing for viewing/downloading pdf files
 - Storage statistics
 - User/Email whitelisting
 - Folder uploading
@@ -39,6 +39,3 @@ I am currently running this on my raspberry pi to store personal files and can p
 - Database: ```cd db && docker-compose up -d```
 - Backend: ```cd backend && go build ./cmd/mydrive/main.go && ./main```
 - Frontend: ```cd frontend && npm i && npm build && npm start```
-
-## Todo
-- Shareable download links
